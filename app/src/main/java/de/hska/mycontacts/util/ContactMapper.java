@@ -1,7 +1,11 @@
 package de.hska.mycontacts.util;
 
+import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.view.View;
+import android.widget.EditText;
 
 import java.io.File;
 
