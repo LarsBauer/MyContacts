@@ -33,13 +33,13 @@ public class ContactDetailActivity extends AppCompatActivity {
     }
 
     private void initContent() {
-//        imageView = (ImageView) findViewById(R.id.personIcon);
-//        Uri image = contact.getImage();
-//        if (image != null && new File(image.getPath()).exists()) {
-//            Bitmap myBitmap = BitmapFactory.decodeFile(contact.getImage().getPath());
-//            imageView.setImageBitmap(myBitmap);
-//        }
-//        ((TextView) findViewById(R.id.nameText)).setText(contact.getFirstName() + " " + contact.getLastName());
+        imageView = (ImageView) findViewById(R.id.contactImage);
+        Uri image = contact.getImage();
+        if (image != null && new File(image.getPath()).exists()) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(contact.getImage().getPath());
+            imageView.setImageBitmap(myBitmap);
+        }
+        ((TextView) findViewById(R.id.debugText)).setText(contact.toString());
 //        ((TextView) findViewById(R.id.mailTextView)).setText(contact.getMail());
 //        ((TextView) findViewById(R.id.phoneTextView)).setText(contact.getPhone());
     }

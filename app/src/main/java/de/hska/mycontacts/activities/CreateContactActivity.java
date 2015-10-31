@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,13 +26,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import de.hska.mycontacts.R;
 import de.hska.mycontacts.dao.ContactsDBHelper;
 import de.hska.mycontacts.model.Address;
 import de.hska.mycontacts.model.Contact;
 import de.hska.mycontacts.tasks.InsertContactTask;
-import de.hska.mycontacts.util.Util;
 
 public class CreateContactActivity extends AppCompatActivity {
 
@@ -148,7 +150,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
     private void captureImage() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (Util.isIntentSupported(this, cameraIntent)) {
+        if (isIntentSupported(cameraIntent)) {
             try {
                 contact.setImage(Uri.fromFile(createImageFile()));
             } catch (IOException ex) {
@@ -191,6 +193,12 @@ public class CreateContactActivity extends AppCompatActivity {
         }
 
         return new File(storageDir, imageFileName + ".jpg");
+    }
+
+    public boolean isIntentSupported(Intent intent) {
+        PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
+        return !activities.isEmpty();
     }
 
     //TODO copy image to app media store

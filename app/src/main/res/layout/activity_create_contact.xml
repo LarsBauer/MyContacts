@@ -60,19 +60,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textPersonName"
-                            android:text="first"
                             android:ems="10"
                             android:id="@+id/firstnameInput"
-                            android:layout_gravity="center_vertical"/>
+                            android:layout_gravity="center_vertical"
+                            android:hint="First name" />
 
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textPersonName"
-                            android:text="last"
                             android:ems="10"
                             android:id="@+id/lastnameInput"
-                            android:layout_gravity="center_vertical"/>
+                            android:layout_gravity="center_vertical"
+                            android:hint="Last name" />
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -107,7 +107,10 @@
                         android:layout_height="100dp"
                         android:id="@+id/imagePreview"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="10dp" />
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/placeholder"
+                        android:background="#000000"
+                        android:padding="1dp" />
 
                     <Button
                         android:layout_width="wrap_content"
@@ -157,7 +160,7 @@
                             android:id="@+id/phoneInput"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
-                            android:text="phone" />
+                            android:hint="Phone no." />
                     </LinearLayout>
 
                     <LinearLayout
@@ -172,7 +175,7 @@
                             android:id="@+id/mailIcon"
                             android:layout_gravity="center_vertical"
                             android:src="@drawable/ic_email_black"
-                            android:layout_marginRight="10dp" />
+                            android:layout_marginRight="10dp"/>
 
                         <EditText
                             android:layout_width="wrap_content"
@@ -182,7 +185,7 @@
                             android:id="@+id/mailInput"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
-                            android:text="mail" />
+                            android:hint="Mail address" />
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -229,17 +232,17 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/streetInput"
                                 android:layout_weight="1"
-                                android:text="street"
                                 android:layout_gravity="center_vertical"
-                                android:layout_marginRight="10dp" />
+                                android:layout_marginRight="10dp"
+                                android:hint="Street name" />
 
                             <EditText
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/numberInput"
                                 android:layout_weight="1"
-                                android:text="no."
-                                android:layout_gravity="center_vertical"/>
+                                android:layout_gravity="center_vertical"
+                                android:hint="No." />
                         </LinearLayout>
 
                         <LinearLayout
@@ -255,17 +258,17 @@
                                 android:ems="10"
                                 android:id="@+id/zipcodeInput"
                                 android:layout_weight="1"
-                                android:text="zip code"
                                 android:layout_gravity="center_vertical"
-                                android:layout_marginRight="10dp" />
+                                android:layout_marginRight="10dp"
+                                android:hint="Zip code" />
 
                             <EditText
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/cityInput"
                                 android:layout_weight="1"
-                                android:text="city"
-                                android:layout_gravity="center_vertical"/>
+                                android:layout_gravity="center_vertical"
+                                android:hint="City" />
                         </LinearLayout>
 
                         <EditText
@@ -273,7 +276,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/countryInput"
                             android:layout_gravity="center_vertical"
-                            android:text="country" />
+                            android:hint="Country" />
 
                     </LinearLayout>
                 </LinearLayout>
