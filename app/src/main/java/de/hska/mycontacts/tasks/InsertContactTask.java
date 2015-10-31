@@ -3,6 +3,7 @@ package de.hska.mycontacts.tasks;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import de.hska.mycontacts.activities.ContactDetailActivity;
 import de.hska.mycontacts.activities.ContactListActivity;
 import de.hska.mycontacts.dao.DatabaseSchema.AddressEntry;
 import de.hska.mycontacts.dao.DatabaseSchema.ContactEntry;
@@ -22,8 +24,11 @@ import de.hska.mycontacts.model.Contact;
  */
 public class InsertContactTask extends AsyncTask<Object, Void, Long> {
 
+    private static final String PARCEL_CONTACT = "de.hska.mycontacts.model.Contact";
+
     private ProgressDialog dialog;
     private Activity ctx;
+    private Contact contact;
 
     public InsertContactTask(Activity context) {
         this.ctx = context;
@@ -36,7 +41,7 @@ public class InsertContactTask extends AsyncTask<Object, Void, Long> {
 
     @Override
     protected Long doInBackground(Object... params) {
-        Contact contact = (Contact) params[0];
+        contact = (Contact) params[0];
         Address address = contact.getAddress();
 
         ContactsDBHelper dbHelper = (ContactsDBHelper) params[1];
@@ -55,24 +60,27 @@ public class InsertContactTask extends AsyncTask<Object, Void, Long> {
         contactValues.put(ContactEntry.COLUMN_NAME_FIRSTNAME, contact.getFirstName());
         contactValues.put(ContactEntry.COLUMN_NAME_LASTNAME, contact.getLastName());
         Uri image = contact.getImage();
-        if(image != null && new File(image.getPath()).exists()) {
-            contactValues.put(ContactEntry.COLUMN_NAME_IMAGE_PATH, contact.getImage().getPath());
+        if(image == null) {
+            contact.setImage(Uri.parse(""));
         }
+        contactValues.put(ContactEntry.COLUMN_NAME_IMAGE_PATH, contact.getImage().getPath());
         contactValues.put(ContactEntry.COLUMN_NAME_MAIL, contact.getMail());
         contactValues.put(ContactEntry.COLUMN_NAME_PHONE, contact.getPhone());
         contactValues.put(ContactEntry.COLUMN_ADDRESS_FK, addressId);
 
-        long id = db.insert(ContactEntry.TABLE_NAME, null, contactValues);
-        if(id == -1) {
-            Toast.makeText(ctx,"Could not add contact to database.", Toast.LENGTH_SHORT).show();
-        }
-        return id;
+        return db.insert(ContactEntry.TABLE_NAME, null, contactValues);
     }
 
     @Override
     protected void onPostExecute(Long id) {
-        //ContactListActivity activity = (ContactListActivity) ctx;
-        //activity.notifyDataChanges();
         dialog.dismiss();
+        if(id == -1) {
+            Toast.makeText(ctx.getBaseContext(),"Could not add contact to database.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(ctx.getBaseContext(),"Added contact to database.", Toast.LENGTH_SHORT).show();
+            Intent detailIntent = new Intent(ctx, ContactDetailActivity.class);
+            detailIntent.putExtra(PARCEL_CONTACT, contact);
+            ctx.startActivity(detailIntent);
+        }
     }
 }

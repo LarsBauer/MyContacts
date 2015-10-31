@@ -104,9 +104,7 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
         adapter.changeCursor(null);
     }
 
-    /*
     public void notifyDataChanges() {
         getLoaderManager().restartLoader(SQLITE_LOADER,null, this);
     }
-    */
 }

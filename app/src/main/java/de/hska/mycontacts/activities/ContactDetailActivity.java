@@ -1,5 +1,6 @@
 package de.hska.mycontacts.activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -41,5 +42,11 @@ public class ContactDetailActivity extends AppCompatActivity {
         //((TextView)findViewById(R.id.nameText)).setText(contact.getFirstName() + " " + contact.getLastName());
         //((TextView)findViewById(R.id.mailTextView)).setText(contact.getMail());
         //((TextView)findViewById(R.id.phoneTextView)).setText(contact.getPhone());
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent listIntent = new Intent(this, ContactListActivity.class);
+        startActivity(listIntent);
     }
 }
