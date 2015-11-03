@@ -79,7 +79,7 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
         switch (loaderID) {
             case SQLITE_LOADER:
-                final String sortOrder = ContactEntry.COLUMN_NAME_LASTNAME + " DESC";
+                final String sortOrder = ContactEntry.COLUMN_NAME_LASTNAME + " ASC";
                 return new CursorLoader(this, null, null, null, null, sortOrder) {
                     @Override
                     public Cursor loadInBackground() {
@@ -102,9 +102,5 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.changeCursor(null);
-    }
-
-    public void notifyDataChanges() {
-        getLoaderManager().restartLoader(SQLITE_LOADER,null, this);
     }
 }

@@ -3,6 +3,7 @@ package de.hska.mycontacts.tasks;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -27,10 +28,10 @@ public class InsertContactTask extends AsyncTask<Object, Void, Long> {
     private static final String PARCEL_CONTACT = "de.hska.mycontacts.model.Contact";
 
     private ProgressDialog dialog;
-    private Activity ctx;
+    private Context ctx;
     private Contact contact;
 
-    public InsertContactTask(Activity context) {
+    public InsertContactTask(Context context) {
         this.ctx = context;
     }
 
@@ -75,9 +76,9 @@ public class InsertContactTask extends AsyncTask<Object, Void, Long> {
     protected void onPostExecute(Long id) {
         dialog.dismiss();
         if(id == -1) {
-            Toast.makeText(ctx.getBaseContext(),"Could not add contact to database.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx,"Could not add contact to database.", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(ctx.getBaseContext(),"Added contact to database.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx,"Added contact to database.", Toast.LENGTH_SHORT).show();
             Intent detailIntent = new Intent(ctx, ContactDetailActivity.class);
             detailIntent.putExtra(PARCEL_CONTACT, contact);
             ctx.startActivity(detailIntent);
