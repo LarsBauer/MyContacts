@@ -1,16 +1,22 @@
 package de.hska.mycontacts.tasks;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import de.hska.mycontacts.R;
+import de.hska.mycontacts.activities.ContactDetailActivity;
 import de.hska.mycontacts.fragments.ContactMapFragment;
 import de.hska.mycontacts.model.Address;
 
@@ -19,30 +25,32 @@ import de.hska.mycontacts.model.Address;
  */
 public class GeocodingTask extends AsyncTask<Address, Void, List<android.location.Address>> {
 
-    private Fragment parent;
+    private Context ctx;
     private ProgressDialog dialog;
+    private String errorMessage = "";
 
-    public GeocodingTask(Fragment fragment) {
-        parent = fragment;
+    public GeocodingTask(Context context) {
+        ctx = context;
     }
 
     @Override
     protected void onPreExecute() {
-        dialog = ProgressDialog.show(parent.getContext(), "", "Please wait...", true);
+        dialog = ProgressDialog.show(ctx, "", "Please wait...", true);
     }
 
     @Override
     protected List<android.location.Address> doInBackground(Address... params) {
         Address address = params[0];
         String query = getQueryString(address);
-        List<android.location.Address> addresses;
+        List<android.location.Address> addresses = new ArrayList<>();
 
-        Geocoder geocoder = new Geocoder(parent.getContext(), Locale.getDefault());
+        Geocoder geocoder = new Geocoder(ctx, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocationName(query, 1);
         } catch (IOException e) {
-            Toast.makeText(parent.getContext(), "Could not resolve given address!", Toast.LENGTH_SHORT).show();
-            return Collections.emptyList();
+            errorMessage = "Connection to Geocoder API failed!";
+        } catch (IllegalStateException e) {
+            errorMessage = "Could not resolve given address!";
         }
 
         return addresses;
@@ -62,10 +70,13 @@ public class GeocodingTask extends AsyncTask<Address, Void, List<android.locatio
 
     @Override
     protected void onPostExecute(List<android.location.Address> addresses) {
-        if(parent instanceof ContactMapFragment) {
-            ContactMapFragment fragment = (ContactMapFragment) parent;
-            fragment.initMap(addresses.get(0));
-            dialog.dismiss();
+        if (addresses.isEmpty()) {
+            Toast.makeText(ctx, errorMessage, Toast.LENGTH_SHORT);
+            addresses.add(new android.location.Address(Locale.getDefault()));
         }
+        ContactDetailActivity activity = (ContactDetailActivity) ctx;
+        ContactMapFragment fragment = (ContactMapFragment) activity.getCurrentFragment();
+        fragment.setAddress(addresses.get(0));
+        dialog.dismiss();
     }
 }

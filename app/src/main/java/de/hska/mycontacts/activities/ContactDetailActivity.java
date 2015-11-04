@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -24,6 +25,7 @@ public class ContactDetailActivity extends FragmentActivity {
 
     private Contact contact;
     private ImageView imageView;
+    private ViewPager pager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +37,13 @@ public class ContactDetailActivity extends FragmentActivity {
         initContent();
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setAdapter(new ContactFragmentPagerAdapter(getSupportFragmentManager(), this, contact));
+        pager = (ViewPager) findViewById(R.id.viewPager);
+        ContactFragmentPagerAdapter adapter = new ContactFragmentPagerAdapter(getSupportFragmentManager(), this, contact);
+        pager.setAdapter(adapter);
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(pager);
     }
 
     private void initContent() {
@@ -59,5 +62,10 @@ public class ContactDetailActivity extends FragmentActivity {
     public void onBackPressed() {
         Intent listIntent = new Intent(this, ContactListActivity.class);
         startActivity(listIntent);
+    }
+
+    public Fragment getCurrentFragment() {
+        Fragment result = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewPager + ":" + pager.getCurrentItem());
+        return result;
     }
 }

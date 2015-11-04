@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,8 +30,8 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String ARGS_CONTACT = "de.hska.mycontacts.model.Contact";
 
     private GoogleMap map;
-    private Contact contact;
     private Address address;
+    private Contact contact;
 
     public static ContactMapFragment newInstance(Contact contact) {
         ContactMapFragment fragment = new ContactMapFragment();
@@ -47,7 +48,7 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             this.contact = getArguments().getParcelable(ARGS_CONTACT);
         }
     }
@@ -58,26 +59,46 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_contact_map, container, false);
 
-        GeocodingTask geocodingTask = new GeocodingTask(this);
-        geocodingTask.execute(contact.getAddress());
-
         return view;
+    }
+
+    @Override
+    public void setMenuVisibility(final boolean visible) {
+        super.setMenuVisibility(visible);
+        if (visible && map == null) {
+            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapFragment);
+            mapFragment.getMapAsync(this);
+        }
     }
 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        LatLng latlng = new LatLng(address.getLatitude(), address.getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
-        map.addMarker(new MarkerOptions()
-                .position(latlng)
-                .title(contact.getFirstName() + " " + contact.getLastName()));
+        if (!isAddressInitialized()) {
+            GeocodingTask geocodingTask = new GeocodingTask(getActivity());
+            geocodingTask.execute(contact.getAddress());
+        }
     }
 
-    public void initMap(Address result) {
+    public void setAddress(Address result) {
         this.address = result;
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapFragment);
-        mapFragment.getMapAsync(this);
+        if (isAddressInitialized()) {
+            LatLng latlng = new LatLng(address.getLatitude(), address.getLongitude());
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
+            map.addMarker(new MarkerOptions()
+                    .position(latlng)
+                    .title(contact.getFirstName() + " " + contact.getLastName()));
+        } else {
+            Toast.makeText(getContext(), "Whoops - could not resolve address!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public boolean isAddressInitialized() {
+        return address != null && address.hasLatitude() && address.hasLongitude();
     }
 }
