@@ -94,9 +94,9 @@ public class CreateContactActivity extends AppCompatActivity {
     private void saveContact() {
         Address address = new Address();
         address.setStreet(getStringValue(R.id.streetInput));
-        address.setNumber(getStringValue(R.id.numberInput));
-        address.setZipCode(getStringValue(R.id.zipcodeInput));
-        address.setCity(getStringValue(R.id.cityInput));
+        address.setNumber(getStringValue(R.id.contactNumber));
+        address.setZipCode(getStringValue(R.id.contactZipcode));
+        address.setCity(getStringValue(R.id.contactCity));
         address.setCountry(getStringValue(R.id.countryInput));
 
         contact.setAddress(address);

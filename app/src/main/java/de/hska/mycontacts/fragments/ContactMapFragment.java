@@ -4,9 +4,11 @@ package de.hska.mycontacts.fragments;
 import android.location.Address;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -14,7 +16,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hska.mycontacts.R;
 import de.hska.mycontacts.model.Contact;
@@ -57,9 +63,7 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_contact_map, container, false);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_contact_map, container, false);
     }
 
     @Override
@@ -86,12 +90,22 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
         if (isAddressInitialized()) {
             LatLng latlng = new LatLng(address.getLatitude(), address.getLongitude());
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
-            map.addMarker(new MarkerOptions()
+            Marker marker = map.addMarker(new MarkerOptions()
                     .position(latlng)
-                    .title(contact.getFirstName() + " " + contact.getLastName()));
+                    .title(contact.getFirstName() + " " + contact.getLastName())
+                    .snippet(createSnippet(address)));
+            marker.showInfoWindow();
         } else {
             Toast.makeText(getContext(), "Whoops - could not resolve address!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private String createSnippet(Address address) {
+        List<String> lines = new ArrayList<>();
+        for(int i = 0; i < address.getMaxAddressLineIndex() + 1; ++i) {
+            lines.add(address.getAddressLine(i));
+        }
+        return TextUtils.join(", ", lines);
     }
 
     public Address getAddress() {

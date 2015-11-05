@@ -30,7 +30,7 @@ public class ContactFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if(position == 0) {
-            return TestPageFragment.newInstance(position);
+            return ContactDetailFragment.newInstance(contact);
         } else {
             return ContactMapFragment.newInstance(contact);
         }

@@ -5,7 +5,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="de.hska.mycontacts.activities.CreateContactActivity">
+    tools:context="de.hska.mycontacts.activities.CreateContactActivity"
+    android:padding="8dp">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -20,7 +21,8 @@
 
             <android.support.v7.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                card_view:cardCornerRadius="4dp"
+                card_view:cardCornerRadius="2dp"
+                card_view:cardElevation="2dp"
                 card_view:contentPadding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -30,7 +32,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:id="@+id/nameCard"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="8dp">
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -54,12 +56,12 @@
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical" >
+                        android:layout_gravity="center_vertical">
 
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textPersonName"
+                            android:inputType="textCapWords|textPersonName"
                             android:ems="10"
                             android:id="@+id/firstnameInput"
                             android:layout_gravity="center_vertical"
@@ -68,7 +70,7 @@
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textPersonName"
+                            android:inputType="textCapWords|textPersonName"
                             android:ems="10"
                             android:id="@+id/lastnameInput"
                             android:layout_gravity="center_vertical"
@@ -79,14 +81,15 @@
 
             <android.support.v7.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                card_view:cardCornerRadius="4dp"
+                card_view:cardCornerRadius="2dp"
+                card_view:cardElevation="2dp"
                 card_view:contentPadding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/nameCard"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/imageCard"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="8dp">
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -115,7 +118,7 @@
                     <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Take Picture"
+                        android:text="Choose Picture"
                         android:id="@+id/cameraButton"
                         android:layout_gravity="center_vertical" />
                 </LinearLayout>
@@ -123,14 +126,15 @@
 
             <android.support.v7.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                card_view:cardCornerRadius="4dp"
+                card_view:cardCornerRadius="2dp"
+                card_view:cardElevation="2dp"
                 card_view:contentPadding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/imageCard"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/contactCard"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="8dp">
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -192,14 +196,15 @@
 
             <android.support.v7.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                card_view:cardCornerRadius="4dp"
+                card_view:cardCornerRadius="2dp"
+                card_view:cardElevation="2dp"
                 card_view:contentPadding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/contactCard"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/addressCard"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="8dp">
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -231,18 +236,22 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/streetInput"
-                                android:layout_weight="1"
+                                android:layout_weight="3"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginRight="10dp"
-                                android:hint="Street name" />
+                                android:hint="Street name"
+                                android:inputType="textCapWords"
+                                android:nextFocusDown="@+id/contactNumber"/>
 
                             <EditText
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/numberInput"
-                                android:layout_weight="1"
+                                android:id="@+id/contactNumber"
                                 android:layout_gravity="center_vertical"
-                                android:hint="No." />
+                                android:hint="No."
+                                android:layout_weight="1"
+                                android:inputType="textPostalAddress"
+                                android:nextFocusDown="@+id/contactZipcode"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -254,21 +263,22 @@
                             <EditText
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:inputType="textPostalAddress"
-                                android:ems="10"
-                                android:id="@+id/zipcodeInput"
-                                android:layout_weight="1"
+                                android:id="@+id/contactZipcode"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginRight="10dp"
-                                android:hint="Zip code" />
+                                android:hint="Zip code"
+                                android:layout_weight="1"
+                                android:inputType="number"
+                                android:nextFocusDown="@+id/contactCity"/>
 
                             <EditText
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/cityInput"
-                                android:layout_weight="1"
+                                android:id="@+id/contactCity"
                                 android:layout_gravity="center_vertical"
-                                android:hint="City" />
+                                android:hint="City"
+                                android:layout_weight="5"
+                                android:inputType="textCapWords" />
                         </LinearLayout>
 
                         <EditText
@@ -276,7 +286,8 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/countryInput"
                             android:layout_gravity="center_vertical"
-                            android:hint="Country" />
+                            android:hint="Country"
+                            android:inputType="textCapWords" />
 
                     </LinearLayout>
                 </LinearLayout>

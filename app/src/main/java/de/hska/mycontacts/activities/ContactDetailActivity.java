@@ -34,7 +34,7 @@ public class ContactDetailActivity extends FragmentActivity {
 
         contact = getIntent().getParcelableExtra(PARCEL_CONTACT);
         Log.d("ContactDetailActivity", contact.toString());
-        initContent();
+        initHeaderContent();
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         pager = (ViewPager) findViewById(R.id.viewPager);
@@ -46,7 +46,7 @@ public class ContactDetailActivity extends FragmentActivity {
         tabLayout.setupWithViewPager(pager);
     }
 
-    private void initContent() {
+    private void initHeaderContent() {
         imageView = (ImageView) findViewById(R.id.contactImage);
         Uri image = contact.getImage();
         if (image != null && new File(image.getPath()).exists()) {
