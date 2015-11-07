@@ -3,14 +3,20 @@ package de.hska.mycontacts.dao;
 import android.provider.BaseColumns;
 
 /**
- * Created by larsbauer on 26.10.15.
+ * Contains database schemas for Contact and Address
  */
 public final class DatabaseSchema {
 
+    /**
+     * Private constructor for DatabaseSchema to prevent instantiation
+     */
     private DatabaseSchema() {
 
     }
 
+    /**
+     * Defines the columns for contact table
+     */
     public static abstract class ContactEntry implements BaseColumns {
         public static final String TABLE_NAME = "contact";
         public static final String COLUMN_NAME_FIRSTNAME = "first_name";
@@ -21,6 +27,9 @@ public final class DatabaseSchema {
         public static final String COLUMN_ADDRESS_FK = "address_fk";
     }
 
+    /**
+     * Defines the columns for address table
+     */
     public static abstract class AddressEntry implements BaseColumns {
         public static final String TABLE_NAME = "address";
         public static final String COLUMN_NAME_STREET = "street";

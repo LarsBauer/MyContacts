@@ -23,6 +23,9 @@ import de.hska.mycontacts.dao.DatabaseSchema.AddressEntry;
 import de.hska.mycontacts.dao.DatabaseSchema.ContactEntry;
 import de.hska.mycontacts.util.ContactMapper;
 
+/**
+ * Activity which contains the list of contacts
+ */
 public class ContactListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int SQLITE_LOADER = 0;
@@ -32,6 +35,10 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
     private SimpleCursorAdapter adapter;
     private ListView contactListView;
 
+    /**
+     * Used to initialize the layout and field of the Activity
+     * @param savedInstanceState bundle with data for re-initialization
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +52,10 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
 
         FloatingActionButton addButton = (FloatingActionButton) findViewById(R.id.addButton);
         addButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * OnClickListener for the add button navigates to CreateContactAcitivy
+             * @param v clicked View
+             */
             @Override
             public void onClick(View v) {
                 Intent createIntent = new Intent(ContactListActivity.this, CreateContactActivity.class);
@@ -53,12 +64,22 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
         });
     }
 
+    /**
+     * Used to initialize the CursorAdapter and layout of the ListView
+     */
     private void initAdapter() {
         String[] fromColumns = {ContactEntry.COLUMN_NAME_LASTNAME};
         int[] toViews = {android.R.id.text1};
         adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, null,fromColumns,toViews, 0);
         contactListView = (ListView) findViewById(R.id.contactList);
         contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * OnItemClickListener for item in ListView
+             * @param parent where the click happened
+             * @param view clicked View
+             * @param position clicked position
+             * @param id row id of the clicked item
+             */
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SQLiteCursor cursor = (SQLiteCursor) parent.getItemAtPosition(position);
@@ -70,17 +91,22 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
         contactListView.setAdapter(adapter);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-    }
-
+    /**
+     * Instantiate a new Loader used to retrieve data from SQLite automatically
+     * @param loaderID id of the loader
+     * @param args additional arguments
+     * @return new instance of Loader
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
         switch (loaderID) {
             case SQLITE_LOADER:
                 final String sortOrder = ContactEntry.COLUMN_NAME_LASTNAME + " ASC";
                 return new CursorLoader(this, null, null, null, null, sortOrder) {
+                    /**
+                     * Loads contacts from SQLite database
+                     * @return cursor with database rows
+                     */
                     @Override
                     public Cursor loadInBackground() {
                         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -94,11 +120,20 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
         }
     }
 
+    /**
+     * Sets retrieved Cursor to SimpleCursorAdapter when database query is finished
+     * @param loader finished Loader
+     * @param data Cursor with data
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.changeCursor(data);
     }
 
+    /**
+     * Gets called when Loader gets reset
+     * @param loader Loader to reset
+     */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.changeCursor(null);

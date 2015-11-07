@@ -8,14 +8,25 @@ import java.io.File;
 import java.io.Serializable;
 
 /**
- * Created by larsbauer on 26.10.15.
+ * Domain class for Contact
  */
 public class Contact implements Parcelable{
 
+    /**
+     * Empty default constructor for Contact
+     */
     public Contact(){
 
     }
 
+    /**
+     * Constructor for Contact
+     * @param firstName first name
+     * @param lastName last name
+     * @param phone phone number
+     * @param mail mail address
+     * @param address address of the contact
+     */
     public Contact(String firstName, String lastName, String phone, String mail, Address address) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -91,11 +102,20 @@ public class Contact implements Parcelable{
                 '}';
     }
 
+    /**
+     * Describes the content of the Parcel
+     * @return bitmask
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * Defines how to serialize the object into Parcel
+     * @param dest Parcel in which the object should be stored
+     * @param flags additional flags
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(firstName);
@@ -106,17 +126,34 @@ public class Contact implements Parcelable{
         dest.writeParcelable(address, flags);
     }
 
+    /**
+     * CREATOR field to generate instance of object from Parcel
+     */
     public static final Parcelable.Creator<Contact> CREATOR
             = new Parcelable.Creator<Contact>() {
+        /**
+         * Creates new instance of Contact from Parcel
+         * @param in the parcel
+         * @return new instance of Contact
+         */
         public Contact createFromParcel(Parcel in) {
             return new Contact(in);
         }
 
+        /**
+         * Creates new Array of Contacts from Parcel
+         * @param size size of the array
+         * @return Array with new instances of Contacts
+         */
         public Contact[] newArray(int size) {
             return new Contact[size];
         }
     };
 
+    /**
+     * Private constructor for Contact used by CREATOR to deserialize Parcel
+     * @param in Parcel to deserialize
+     */
     private Contact(Parcel in) {
         firstName = in.readString();
         lastName = in.readString();

@@ -12,9 +12,7 @@ import de.hska.mycontacts.R;
 import de.hska.mycontacts.model.Contact;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ContactDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment to display the details of selected Contact
  */
 public class ContactDetailFragment extends Fragment {
 
@@ -24,10 +22,8 @@ public class ContactDetailFragment extends Fragment {
 
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param contact Parameter 1.
+     * Creates new instance of ContactDetailFragment
+     * @param contact Contact whose details should be displayed
      * @return A new instance of fragment ContactDetailFragment.
      */
     public static ContactDetailFragment newInstance(Contact contact) {
@@ -38,10 +34,17 @@ public class ContactDetailFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Default constructor for ContactDetailFragment used by factory method
+     */
     public ContactDetailFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Used to initialize Contact of the Fragment
+     * @param savedInstanceState bundle with data for re-initialization
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +53,13 @@ public class ContactDetailFragment extends Fragment {
         }
     }
 
+    /**
+     * Used to inflate the defined layout of the Fragment
+     * @param inflater layout inflater
+     * @param container container of the fragment
+     * @param savedInstanceState bundle with data for re-initialization
+     * @return inflated View for Fragment
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,13 +67,20 @@ public class ContactDetailFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_contact_detail, container, false);
     }
 
+    /**
+     * Called when View was created and used to initialize dynamic fragment content
+     * @param view the created View
+     * @param savedInstanceState bundle with data for re-initialization
+     */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view,savedInstanceState);
         initDetails();
     }
 
-
+    /**
+     * Initializes the text of TextViews with given Contact
+     */
     private void initDetails() {
         View view = getView();
         ((TextView) view.findViewById(R.id.contactPhone)).setText(contact.getPhone());

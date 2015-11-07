@@ -6,14 +6,25 @@ import android.os.Parcelable;
 import java.io.Serializable;
 
 /**
- * Created by larsbauer on 26.10.15.
+ * Domain class for Address
  */
 public class Address implements Parcelable{
 
+    /**
+     * Empty default constructor for Address
+     */
     public Address(){
 
     }
 
+    /**
+     * Constructor for Address
+     * @param street street name
+     * @param number house number
+     * @param zipCode zip code
+     * @param city city name
+     * @param country country name
+     */
     public Address(String street, String number, String zipCode, String city, String country) {
         this.street = street;
         this.number = number;
@@ -79,11 +90,20 @@ public class Address implements Parcelable{
                 '}';
     }
 
+    /**
+     * Describes the content of the Parcel
+     * @return bitmask
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * Defines how to serialize the object into Parcel
+     * @param dest Parcel in which the object should be stored
+     * @param flags additional flags
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(street);
@@ -93,17 +113,34 @@ public class Address implements Parcelable{
         dest.writeString(country);
     }
 
+    /**
+     * CREATOR field to generate instance of object from Parcel
+     */
     public static final Parcelable.Creator<Address> CREATOR
             = new Parcelable.Creator<Address>() {
+        /**
+         * Creates new instance of Address from Parcel
+         * @param in the parcel
+         * @return new instance of Address
+         */
         public Address createFromParcel(Parcel in) {
             return new Address(in);
         }
 
+        /**
+         * Creates new Array of Addresses from Parcel
+         * @param size size of the array
+         * @return Array with new instances of Addresses
+         */
         public Address[] newArray(int size) {
             return new Address[size];
         }
     };
 
+    /**
+     * Private constructor for Address used by CREATOR to deserialize Parcel
+     * @param in Parcel to deserialize
+     */
     private Address(Parcel in) {
         street = in.readString();
         number = in.readString();

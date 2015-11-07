@@ -34,6 +34,9 @@ import de.hska.mycontacts.model.Address;
 import de.hska.mycontacts.model.Contact;
 import de.hska.mycontacts.tasks.InsertContactTask;
 
+/**
+ * Activity used to create new contacts
+ */
 public class CreateContactActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 0;
@@ -49,6 +52,10 @@ public class CreateContactActivity extends AppCompatActivity {
     private Contact contact = new Contact();
     private AlertDialog.Builder builder;
 
+    /**
+     * Used to initialize the layout and field of the Activity
+     * @param savedInstanceState bundle with data for re-initialization
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,10 +66,19 @@ public class CreateContactActivity extends AppCompatActivity {
 
         Button cameraButton = (Button) findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * OnClickListener for camera button opens AlertDialog for user selection
+             * @param v clicked View
+             */
             @Override
             public void onClick(View v) {
                 builder.setTitle(DIALOG_TITLE);
                 builder.setItems(DIALOG_OPTIONS, new DialogInterface.OnClickListener() {
+                    /**
+                     * OnClickListener for dialog options to let user decide whether to open camera or choose existing image
+                     * @param dialog clicked Dialog
+                     * @param which position of the clicked option
+                     */
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String selected = (String) DIALOG_OPTIONS[which];
@@ -84,6 +100,10 @@ public class CreateContactActivity extends AppCompatActivity {
 
         Button saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * OnClickListener for save button triggers insert into database
+             * @param v clicked View
+             */
             @Override
             public void onClick(View v) {
                 saveContact();
@@ -91,6 +111,9 @@ public class CreateContactActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Creates new Contact and Address and starts AsyncTask for database insert
+     */
     private void saveContact() {
         Address address = new Address();
         address.setStreet(getStringValue(R.id.streetInput));
@@ -109,7 +132,12 @@ public class CreateContactActivity extends AppCompatActivity {
         insertTask.execute(contact, dbHelper);
     }
 
-    public String getStringValue(int id) {
+    /**
+     * Helper method to extract String values from input fields
+     * @param id id of the EditText
+     * @return text value of EditText
+     */
+    private String getStringValue(int id) {
         View field = findViewById(id);
         if (field instanceof EditText) {
             EditText textField = (EditText) field;
@@ -118,6 +146,12 @@ public class CreateContactActivity extends AppCompatActivity {
         return "";
     }
 
+    /**
+     * Callback for startActivityForResult gets used to process result of intents
+     * @param requestCode request code of the started intent
+     * @param resultCode status code to determine whether intent was successful
+     * @param data returned data of the intent
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -142,12 +176,18 @@ public class CreateContactActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Starts Intent to choose existing image from gallery
+     */
     private void chooseImage() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType("image/*");
         startActivityForResult(Intent.createChooser(galleryIntent, "Select Picture"), REQUEST_IMAGE_CHOOSE);
     }
 
+    /**
+     * Starts Intent to open camera and take picture
+     */
     private void captureImage() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (isIntentSupported(cameraIntent)) {
@@ -169,6 +209,9 @@ public class CreateContactActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Starts (unofficial) Intent to crop chosen image which is likely to fail
+     */
     private void cropImage() {
         Intent cropIntent = new Intent("com.android.camera.action.CROP");
         cropIntent.setDataAndType(contact.getImage(), "image/*");
@@ -184,6 +227,11 @@ public class CreateContactActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Creates File for picture in external file directory
+     * @return new File in App's private file storage
+     * @throws IOException if access to external storage fails
+     */
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "CONTACT_" + timeStamp + "_";
@@ -195,12 +243,23 @@ public class CreateContactActivity extends AppCompatActivity {
         return new File(storageDir, imageFileName + ".jpg");
     }
 
-    public boolean isIntentSupported(Intent intent) {
+    /**
+     * Helper method to check if a Intent is supported by device
+     * @param intent Intent to be checked
+     * @return true if Intent is safe to use
+     */
+    private boolean isIntentSupported(Intent intent) {
         PackageManager packageManager = getPackageManager();
         List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
         return !activities.isEmpty();
     }
 
+    /**
+     * Helper method to copy chosen image from gallery into App's private file storage
+     * @param src source File
+     * @param dst destination File
+     * @throws IOException if copy process fails
+     */
     //TODO copy image to app media store
     private void copyFile(File src, File dst) throws IOException {
         InputStream in = new FileInputStream(src);
