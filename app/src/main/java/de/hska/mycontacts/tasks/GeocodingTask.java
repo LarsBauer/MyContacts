@@ -71,7 +71,7 @@ public class GeocodingTask extends AsyncTask<Address, Void, List<android.locatio
         query += address.getNumber() == null ? " " : address.getNumber() + " ";
         query += address.getZipCode() == null ? " " : address.getZipCode() + " ";
         query += address.getCity() == null ? " " : address.getCity() + " ";
-        query += address.getCountry() == null ? "" : address.getCity();
+        query += address.getCountry() == null ? "" : address.getCountry();
 
         return query;
     }
