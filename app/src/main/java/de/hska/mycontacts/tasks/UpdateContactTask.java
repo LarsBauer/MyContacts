@@ -2,13 +2,21 @@ package de.hska.mycontacts.tasks;
 
 import android.os.AsyncTask;
 
+import de.hska.mycontacts.model.Contact;
+
 /**
- * Created by larsbauer on 27.10.15.
+ * AsyncTask to update existing Contact
  */
-public class UpdateContactTask extends AsyncTask<Object, Void, Integer> {
+public class UpdateContactTask extends AsyncTask<Contact, Void, Integer> {
+
+    /**
+     * Runs on background thread and updates Contact in SQLite database
+     * @param params the Contact which should be updated
+     * @return number of the rows affected
+     */
     @Override
-    protected Integer doInBackground(Object... params) {
-        //TODO
+    protected Integer doInBackground(Contact... params) {
+        //TODO not implemented yet
         return null;
     }
 }

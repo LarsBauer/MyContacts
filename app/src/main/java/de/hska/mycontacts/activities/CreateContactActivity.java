@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.List;
 
 import de.hska.mycontacts.R;
-import de.hska.mycontacts.dao.ContactsDBHelper;
 import de.hska.mycontacts.model.Address;
 import de.hska.mycontacts.model.Contact;
 import de.hska.mycontacts.tasks.InsertContactTask;
@@ -48,7 +47,6 @@ public class CreateContactActivity extends AppCompatActivity {
     private static final String DIALOG_CHOOSE_IMAGE = "Choose from gallery";
     private static final CharSequence[] DIALOG_OPTIONS = {DIALOG_CAPTURE_IMAGE, DIALOG_CHOOSE_IMAGE, "Cancel"};
 
-    private ContactsDBHelper dbHelper;
     private Contact contact = new Contact();
     private AlertDialog.Builder builder;
 
@@ -61,7 +59,6 @@ public class CreateContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_contact);
 
-        dbHelper = ContactsDBHelper.getInstance(this);
         builder = new AlertDialog.Builder(this);
 
         Button cameraButton = (Button) findViewById(R.id.cameraButton);
@@ -129,7 +126,7 @@ public class CreateContactActivity extends AppCompatActivity {
         contact.setMail(getStringValue(R.id.mailInput));
 
         InsertContactTask insertTask = new InsertContactTask(this);
-        insertTask.execute(contact, dbHelper);
+        insertTask.execute(contact);
     }
 
     /**

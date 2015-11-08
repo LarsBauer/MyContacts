@@ -33,11 +33,20 @@ public class Address implements Parcelable{
         this.country = country;
     }
 
+    private long id;
     private String street;
     private String number;
     private String zipCode;
     private String city;
     private String country;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getStreet() {
         return street;

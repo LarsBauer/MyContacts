@@ -31,7 +31,6 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
     private static final int SQLITE_LOADER = 0;
     private static final String PARCEL_CONTACT = "de.hska.mycontacts.model.Contact";
 
-    private ContactsDBHelper dbHelper;
     private SimpleCursorAdapter adapter;
     private ListView contactListView;
 
@@ -46,7 +45,6 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        dbHelper = ContactsDBHelper.getInstance(this);
         initAdapter();
         getLoaderManager().initLoader(SQLITE_LOADER, null, this);
 
@@ -109,10 +107,7 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
                      */
                     @Override
                     public Cursor loadInBackground() {
-                        SQLiteDatabase db = dbHelper.getReadableDatabase();
-                        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-                        qb.setTables(ContactEntry.TABLE_NAME + " JOIN " + AddressEntry.TABLE_NAME + " ON " + ContactEntry.TABLE_NAME + "." + ContactEntry.COLUMN_ADDRESS_FK + "=" + AddressEntry.TABLE_NAME + "." + AddressEntry._ID);
-                        return qb.query(db, null,null, null, null, null, sortOrder);
+                        return ContactsDBHelper.getInstance(ContactListActivity.this).findAllContacts();
                     }
                 };
             default:

@@ -21,9 +21,9 @@ import de.hska.mycontacts.model.Address;
 import de.hska.mycontacts.model.Contact;
 
 /**
- * Created by larsbauer on 27.10.15.
+ * AsyncTask to insert new created Contact into SQLite database
  */
-public class InsertContactTask extends AsyncTask<Object, Void, Long> {
+public class InsertContactTask extends AsyncTask<Contact, Void, Long> {
 
     private static final String PARCEL_CONTACT = "de.hska.mycontacts.model.Contact";
 
@@ -31,47 +31,38 @@ public class InsertContactTask extends AsyncTask<Object, Void, Long> {
     private Context ctx;
     private Contact contact;
 
+    /**
+     * Constructor for InsertContactTask
+     * @param context the context
+     */
     public InsertContactTask(Context context) {
         this.ctx = context;
     }
 
+    /**
+     * Runs on UI thread before execution of AsyncTask and gets used to display a ProgressDialog
+     */
     @Override
     protected void onPreExecute() {
         dialog = ProgressDialog.show(ctx, "", "Please wait...", true);
     }
 
+    /**
+     * Runs on background thread and inserts contact in database
+     * @param params
+     * @return row id of the inserted entry or -1 if an error occurred
+     */
     @Override
-    protected Long doInBackground(Object... params) {
-        contact = (Contact) params[0];
-        Address address = contact.getAddress();
+    protected Long doInBackground(Contact... params) {
+        contact = params[0];
 
-        ContactsDBHelper dbHelper = (ContactsDBHelper) params[1];
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues addressValues = new ContentValues();
-        addressValues.put(AddressEntry.COLUMN_NAME_STREET, address.getStreet());
-        addressValues.put(AddressEntry.COLUMN_NAME_NUMBER, address.getNumber());
-        addressValues.put(AddressEntry.COLUMN_NAME_ZIPCODE, address.getZipCode());
-        addressValues.put(AddressEntry.COLUMN_NAME_CITY, address.getCity());
-        addressValues.put(AddressEntry.COLUMN_NAME_COUNTRY, address.getCountry());
-
-        long addressId = db.insert(AddressEntry.TABLE_NAME, null, addressValues);
-
-        ContentValues contactValues = new ContentValues();
-        contactValues.put(ContactEntry.COLUMN_NAME_FIRSTNAME, contact.getFirstName());
-        contactValues.put(ContactEntry.COLUMN_NAME_LASTNAME, contact.getLastName());
-        Uri image = contact.getImage();
-        if(image == null) {
-            contact.setImage(Uri.parse(""));
-        }
-        contactValues.put(ContactEntry.COLUMN_NAME_IMAGE_PATH, contact.getImage().getPath());
-        contactValues.put(ContactEntry.COLUMN_NAME_MAIL, contact.getMail());
-        contactValues.put(ContactEntry.COLUMN_NAME_PHONE, contact.getPhone());
-        contactValues.put(ContactEntry.COLUMN_ADDRESS_FK, addressId);
-
-        return db.insert(ContactEntry.TABLE_NAME, null, contactValues);
+        return ContactsDBHelper.getInstance(ctx).insertContact(contact);
     }
 
+    /**
+     * Runs on UI thread and is used to give user feedback and redirect to ContactsDetailActivity of newly created Contact
+     * @param id row id of entry or error code
+     */
     @Override
     protected void onPostExecute(Long id) {
         dialog.dismiss();

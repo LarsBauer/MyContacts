@@ -1,27 +1,22 @@
 package de.hska.mycontacts.tasks;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.location.Geocoder;
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import de.hska.mycontacts.R;
 import de.hska.mycontacts.activities.ContactDetailActivity;
 import de.hska.mycontacts.fragments.ContactMapFragment;
 import de.hska.mycontacts.model.Address;
 
 /**
- * Created by larsbauer on 03.11.15.
+ * Resolves Contact's Address by using Google's Geocoding API
  */
 public class GeocodingTask extends AsyncTask<Address, Void, List<android.location.Address>> {
 
@@ -33,11 +28,19 @@ public class GeocodingTask extends AsyncTask<Address, Void, List<android.locatio
         ctx = context;
     }
 
+    /**
+     * Runs on UI thread before execution of AsyncTask and gets used to display a ProgressDialog
+     */
     @Override
     protected void onPreExecute() {
         dialog = ProgressDialog.show(ctx, "", "Please wait...", true);
     }
 
+    /**
+     * Runs on background thread and resolves given Address by using Google Geocoder
+     * @param params Address which should be resolved
+     * @return list of Addresses including latitude and longitude or empty list of no matches were found
+     */
     @Override
     protected List<android.location.Address> doInBackground(Address... params) {
         Address address = params[0];
@@ -56,6 +59,11 @@ public class GeocodingTask extends AsyncTask<Address, Void, List<android.locatio
         return addresses;
     }
 
+    /**
+     * Helper method to create query string from Address object
+     * @param address the Address which should be resolved
+     * @return query string including all Address fields
+     */
     private String getQueryString(Address address) {
         String query = "";
 
@@ -68,6 +76,10 @@ public class GeocodingTask extends AsyncTask<Address, Void, List<android.locatio
         return query;
     }
 
+    /**
+     * Runs on UI thread and is used to give user feedback and set found Address to ContactMapFragment
+     * @param addresses
+     */
     @Override
     protected void onPostExecute(List<android.location.Address> addresses) {
         if (addresses.isEmpty()) {

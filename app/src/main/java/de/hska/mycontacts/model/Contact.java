@@ -35,12 +35,21 @@ public class Contact implements Parcelable{
         this.address = address;
     }
 
+    private long id;
     private Uri image;
     private String firstName;
     private String lastName;
     private String phone;
     private String mail;
     private Address address;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
