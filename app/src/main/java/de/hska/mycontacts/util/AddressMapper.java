@@ -12,6 +12,7 @@ public class AddressMapper {
 
     /**
      * Map Cursor to Address
+     *
      * @param cursor the cursor
      * @return mapped Address
      */

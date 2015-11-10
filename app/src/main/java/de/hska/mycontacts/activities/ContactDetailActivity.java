@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 
@@ -27,7 +26,11 @@ import de.hska.mycontacts.fragments.ContactFragmentPagerAdapter;
 import de.hska.mycontacts.model.Contact;
 import de.hska.mycontacts.tasks.DeleteContactTask;
 
-import static de.hska.mycontacts.util.Constants.*;
+import static de.hska.mycontacts.util.Constants.DIALOG_DELETE_MESSAGE;
+import static de.hska.mycontacts.util.Constants.DIALOG_DELETE_NEGATIVE;
+import static de.hska.mycontacts.util.Constants.DIALOG_DELETE_POSITIVE;
+import static de.hska.mycontacts.util.Constants.DIALOG_DELETE_TITLE;
+import static de.hska.mycontacts.util.Constants.PARCEL_CONTACT;
 
 /**
  * Activity to display contact details
@@ -40,6 +43,7 @@ public class ContactDetailActivity extends AppCompatActivity {
 
     /**
      * Used to initialize the layout and field of the Activity
+     *
      * @param savedInstanceState bundle with data for re-initialization
      */
     @Override
@@ -82,17 +86,32 @@ public class ContactDetailActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Deletes the current Contact from the database
+     */
     private void deleteContact() {
         DeleteContactTask deleteTask = new DeleteContactTask(this);
         deleteTask.execute(contact);
     }
 
+    /**
+     * Used to inflate the Activity's specific menu
+     *
+     * @param menu the Menu
+     * @return whether to show menu
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_contact_details, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Gets called when item from menu gets selected
+     *
+     * @param item the selected menu item
+     * @return true if event was handled successfully
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -116,6 +135,7 @@ public class ContactDetailActivity extends AppCompatActivity {
 
     /**
      * Retrieves active Fragment from ViewPager
+     *
      * @return current visible tab Fragment
      */
     public Fragment getCurrentFragment() {
@@ -123,6 +143,11 @@ public class ContactDetailActivity extends AppCompatActivity {
         return result;
     }
 
+    /**
+     * Helper method which creates the AlertDialog to confirm deletion
+     *
+     * @return the dialog
+     */
     private Dialog createConfirmDialog() {
         AlertDialog.Builder builder;
         builder = new AlertDialog.Builder(this);

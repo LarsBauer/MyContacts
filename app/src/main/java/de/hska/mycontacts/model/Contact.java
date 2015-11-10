@@ -4,28 +4,27 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.File;
-import java.io.Serializable;
 
 /**
  * Domain class for Contact
  */
-public class Contact implements Parcelable{
+public class Contact implements Parcelable {
 
     /**
      * Empty default constructor for Contact
      */
-    public Contact(){
+    public Contact() {
 
     }
 
     /**
      * Constructor for Contact
+     *
      * @param firstName first name
-     * @param lastName last name
-     * @param phone phone number
-     * @param mail mail address
-     * @param address address of the contact
+     * @param lastName  last name
+     * @param phone     phone number
+     * @param mail      mail address
+     * @param address   address of the contact
      */
     public Contact(String firstName, String lastName, String phone, String mail, Address address) {
         this.firstName = firstName;
@@ -114,6 +113,7 @@ public class Contact implements Parcelable{
 
     /**
      * Describes the content of the Parcel
+     *
      * @return bitmask
      */
     @Override
@@ -123,7 +123,8 @@ public class Contact implements Parcelable{
 
     /**
      * Defines how to serialize the object into Parcel
-     * @param dest Parcel in which the object should be stored
+     *
+     * @param dest  Parcel in which the object should be stored
      * @param flags additional flags
      */
     @Override
@@ -163,6 +164,7 @@ public class Contact implements Parcelable{
 
     /**
      * Private constructor for Contact used by CREATOR to deserialize Parcel
+     *
      * @param in Parcel to deserialize
      */
     private Contact(Parcel in) {

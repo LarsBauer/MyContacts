@@ -13,6 +13,7 @@ public class ContactMapper {
 
     /**
      * Map Cursor to Contact
+     *
      * @param cursor the cursor
      * @return mapped Contact
      */

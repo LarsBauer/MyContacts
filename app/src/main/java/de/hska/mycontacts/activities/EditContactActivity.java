@@ -53,6 +53,7 @@ public class EditContactActivity extends AppCompatActivity {
 
     /**
      * Used to initialize the layout and field of the Activity
+     *
      * @param savedInstanceState bundle with data for re-initialization
      */
     @Override
@@ -102,12 +103,24 @@ public class EditContactActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Used to inflate the Activity's specific menu
+     *
+     * @param menu the Menu
+     * @return whether to show menu
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_create_contact, menu);
         return true;
     }
 
+    /**
+     * Gets called when item from menu gets selected
+     *
+     * @param item the selected menu item
+     * @return true if event was handled successfully
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -127,21 +140,21 @@ public class EditContactActivity extends AppCompatActivity {
      * Initializes EditText views
      */
     private void initContent() {
-        ((EditText)findViewById(R.id.firstnameEdit)).setText(updatedContact.getFirstName());
-        ((EditText)findViewById(R.id.lastnameEdit)).setText(updatedContact.getLastName());
+        ((EditText) findViewById(R.id.firstnameEdit)).setText(updatedContact.getFirstName());
+        ((EditText) findViewById(R.id.lastnameEdit)).setText(updatedContact.getLastName());
         Uri image = updatedContact.getImage();
         if (image != null && new File(image.getPath()).exists()) {
             Bitmap myBitmap = BitmapFactory.decodeFile(updatedContact.getImage().getPath());
             ((ImageView) findViewById(R.id.imagePreview)).setImageBitmap(myBitmap);
         }
-        ((EditText)findViewById(R.id.phoneEdit)).setText(updatedContact.getPhone());
-        ((EditText)findViewById(R.id.mailEdit)).setText(updatedContact.getMail());
+        ((EditText) findViewById(R.id.phoneEdit)).setText(updatedContact.getPhone());
+        ((EditText) findViewById(R.id.mailEdit)).setText(updatedContact.getMail());
         Address address = updatedContact.getAddress();
-        ((EditText)findViewById(R.id.streetEdit)).setText(address.getStreet());
-        ((EditText)findViewById(R.id.numberEdit)).setText(address.getNumber());
-        ((EditText)findViewById(R.id.zipcodeEdit)).setText(address.getZipCode());
-        ((EditText)findViewById(R.id.cityEdit)).setText(address.getCity());
-        ((EditText)findViewById(R.id.countryEdit)).setText(address.getCountry());
+        ((EditText) findViewById(R.id.streetEdit)).setText(address.getStreet());
+        ((EditText) findViewById(R.id.numberEdit)).setText(address.getNumber());
+        ((EditText) findViewById(R.id.zipcodeEdit)).setText(address.getZipCode());
+        ((EditText) findViewById(R.id.cityEdit)).setText(address.getCity());
+        ((EditText) findViewById(R.id.countryEdit)).setText(address.getCountry());
     }
 
     /**
@@ -167,6 +180,7 @@ public class EditContactActivity extends AppCompatActivity {
 
     /**
      * Helper method to extract String values from input fields
+     *
      * @param id id of the EditText
      * @return text value of EditText
      */
@@ -234,6 +248,7 @@ public class EditContactActivity extends AppCompatActivity {
 
     /**
      * Creates File for picture in external file directory
+     *
      * @return new File in App's private file storage
      * @throws IOException if access to external storage fails
      */
@@ -250,6 +265,7 @@ public class EditContactActivity extends AppCompatActivity {
 
     /**
      * Helper method to check if a Intent is supported by device
+     *
      * @param intent Intent to be checked
      * @return true if Intent is safe to use
      */

@@ -23,6 +23,7 @@ public class UpdateContactTask extends AsyncTask<Contact, Void, Integer> {
 
     /**
      * Constructor for UpdateContactTask
+     *
      * @param context the context
      */
     public UpdateContactTask(Context context) {
@@ -39,6 +40,7 @@ public class UpdateContactTask extends AsyncTask<Contact, Void, Integer> {
 
     /**
      * Runs on background thread and updates Contact in SQLite database
+     *
      * @param params the Contact which should be updated
      * @return number of the rows affected
      */
@@ -51,15 +53,16 @@ public class UpdateContactTask extends AsyncTask<Contact, Void, Integer> {
 
     /**
      * Runs on UI thread and is used to give user feedback and redirect to ContactsDetailActivity of updated Contact
+     *
      * @param affectedRows number of affected rows
      */
     @Override
     protected void onPostExecute(Integer affectedRows) {
         dialog.dismiss();
-        if(affectedRows != 1) {
+        if (affectedRows != 1) {
             Toast.makeText(ctx, "Could not update contact in database.", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(ctx,"Updated contact in database.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, "Updated contact in database.", Toast.LENGTH_SHORT).show();
             Intent detailIntent = new Intent(ctx, ContactDetailActivity.class);
             detailIntent.putExtra(PARCEL_CONTACT, contact);
             ctx.startActivity(detailIntent);

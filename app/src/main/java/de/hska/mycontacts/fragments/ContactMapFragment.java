@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,6 +38,12 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
     private Address address;
     private Contact contact;
 
+    /**
+     * Creates new instance of ContactMapFragment
+     *
+     * @param contact Contact whose Address should be displayed
+     * @return a new instance of fragment ContactMapFragment
+     */
     public static ContactMapFragment newInstance(Contact contact) {
         ContactMapFragment fragment = new ContactMapFragment();
         Bundle args = new Bundle();
@@ -47,10 +52,18 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
         return fragment;
     }
 
+    /**
+     * Default constructor for ContactMapFragment used by factory method
+     */
     public ContactMapFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Used to initialize Contact of the Fragment
+     *
+     * @param savedInstanceState bundle with data for re-initialization
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +72,14 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * Used to inflate the defined layout of the Fragment
+     *
+     * @param inflater           layout inflater
+     * @param container          container of the fragment
+     * @param savedInstanceState bundle with data for re-initialization
+     * @return inflated View for Fragment
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,6 +87,11 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
         return inflater.inflate(R.layout.fragment_contact_map, container, false);
     }
 
+    /**
+     * Used to determine whether ContactMapFragment is visible at the moment to initialize Address
+     *
+     * @param visible true if visible
+     */
     @Override
     public void setMenuVisibility(final boolean visible) {
         super.setMenuVisibility(visible);
@@ -76,6 +102,11 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+    /**
+     * Callback when async requested Google Map is ready
+     *
+     * @param googleMap the retrieved map
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -85,6 +116,11 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * Gets called by GeocodingTask and draws Marker on map when Address is valid
+     *
+     * @param result
+     */
     public void setAddress(Address result) {
         this.address = result;
         if (isAddressInitialized()) {
@@ -100,18 +136,25 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * Helper method to create a snippet for Marker's info window
+     *
+     * @param address the Address to display
+     * @return address lines in 1 line
+     */
     private String createSnippet(Address address) {
         List<String> lines = new ArrayList<>();
-        for(int i = 0; i < address.getMaxAddressLineIndex() + 1; ++i) {
+        for (int i = 0; i < address.getMaxAddressLineIndex() + 1; ++i) {
             lines.add(address.getAddressLine(i));
         }
         return TextUtils.join(", ", lines);
     }
 
-    public Address getAddress() {
-        return address;
-    }
-
+    /**
+     * Helper method to check whether retrieved Address is valid
+     *
+     * @return true if not null and containing latitude and longitude
+     */
     public boolean isAddressInitialized() {
         return address != null && address.hasLatitude() && address.hasLongitude();
     }

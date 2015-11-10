@@ -35,6 +35,7 @@ import de.hska.mycontacts.R;
 import de.hska.mycontacts.model.Address;
 import de.hska.mycontacts.model.Contact;
 import de.hska.mycontacts.tasks.InsertContactTask;
+
 import static de.hska.mycontacts.util.Constants.*;
 
 /**
@@ -46,6 +47,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
     /**
      * Used to initialize the layout and field of the Activity
+     *
      * @param savedInstanceState bundle with data for re-initialization
      */
     @Override
@@ -65,29 +67,29 @@ public class CreateContactActivity extends AppCompatActivity {
                 selectionDialog.show();
             }
         });
-
-//        Button saveButton = (Button) findViewById(R.id.saveButton);
-//        saveButton.setOnClickListener(new View.OnClickListener() {
-//            /**
-//             * OnClickListener for save button triggers insert into database
-//             * @param v clicked View
-//             */
-//            @Override
-//            public void onClick(View v) {
-//                saveContact();
-//            }
-//        });
     }
 
+    /**
+     * Used to inflate the Activity's specific menu
+     *
+     * @param menu the Menu
+     * @return whether to show menu
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_create_contact, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Gets called when item from menu gets selected
+     *
+     * @param item the selected menu item
+     * @return true if event was handled successfully
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.action_cancel:
                 Intent listIntent = new Intent(this, ContactListActivity.class);
                 startActivity(listIntent);
@@ -123,6 +125,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
     /**
      * Helper method to extract String values from input fields
+     *
      * @param id id of the EditText
      * @return text value of EditText
      */
@@ -137,9 +140,10 @@ public class CreateContactActivity extends AppCompatActivity {
 
     /**
      * Callback for startActivityForResult gets used to process result of intents
+     *
      * @param requestCode request code of the started intent
-     * @param resultCode status code to determine whether intent was successful
-     * @param data returned data of the intent
+     * @param resultCode  status code to determine whether intent was successful
+     * @param data        returned data of the intent
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -220,6 +224,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
     /**
      * Creates File for picture in external file directory
+     *
      * @return new File in App's private file storage
      * @throws IOException if access to external storage fails
      */
@@ -236,6 +241,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
     /**
      * Helper method to check if a Intent is supported by device
+     *
      * @param intent Intent to be checked
      * @return true if Intent is safe to use
      */
@@ -245,6 +251,11 @@ public class CreateContactActivity extends AppCompatActivity {
         return !activities.isEmpty();
     }
 
+    /**
+     * Helper method which creates an AlertDialog to let the user decide
+     *
+     * @return the dialog
+     */
     private Dialog getSelectionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(DIALOG_IMAGE_TITLE);
@@ -274,6 +285,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
     /**
      * Helper method to copy chosen image from gallery into App's private file storage
+     *
      * @param src source File
      * @param dst destination File
      * @throws IOException if copy process fails

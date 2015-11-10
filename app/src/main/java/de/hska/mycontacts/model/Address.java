@@ -3,26 +3,25 @@ package de.hska.mycontacts.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 /**
  * Domain class for Address
  */
-public class Address implements Parcelable{
+public class Address implements Parcelable {
 
     /**
      * Empty default constructor for Address
      */
-    public Address(){
+    public Address() {
 
     }
 
     /**
      * Constructor for Address
-     * @param street street name
-     * @param number house number
+     *
+     * @param street  street name
+     * @param number  house number
      * @param zipCode zip code
-     * @param city city name
+     * @param city    city name
      * @param country country name
      */
     public Address(String street, String number, String zipCode, String city, String country) {
@@ -102,6 +101,7 @@ public class Address implements Parcelable{
 
     /**
      * Describes the content of the Parcel
+     *
      * @return bitmask
      */
     @Override
@@ -111,7 +111,8 @@ public class Address implements Parcelable{
 
     /**
      * Defines how to serialize the object into Parcel
-     * @param dest Parcel in which the object should be stored
+     *
+     * @param dest  Parcel in which the object should be stored
      * @param flags additional flags
      */
     @Override
@@ -150,6 +151,7 @@ public class Address implements Parcelable{
 
     /**
      * Private constructor for Address used by CREATOR to deserialize Parcel
+     *
      * @param in Parcel to deserialize
      */
     private Address(Parcel in) {

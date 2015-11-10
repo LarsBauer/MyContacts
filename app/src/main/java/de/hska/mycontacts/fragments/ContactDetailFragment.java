@@ -23,6 +23,7 @@ public class ContactDetailFragment extends Fragment {
 
     /**
      * Creates new instance of ContactDetailFragment
+     *
      * @param contact Contact whose details should be displayed
      * @return A new instance of fragment ContactDetailFragment.
      */
@@ -43,6 +44,7 @@ public class ContactDetailFragment extends Fragment {
 
     /**
      * Used to initialize Contact of the Fragment
+     *
      * @param savedInstanceState bundle with data for re-initialization
      */
     @Override
@@ -55,8 +57,9 @@ public class ContactDetailFragment extends Fragment {
 
     /**
      * Used to inflate the defined layout of the Fragment
-     * @param inflater layout inflater
-     * @param container container of the fragment
+     *
+     * @param inflater           layout inflater
+     * @param container          container of the fragment
      * @param savedInstanceState bundle with data for re-initialization
      * @return inflated View for Fragment
      */
@@ -69,12 +72,13 @@ public class ContactDetailFragment extends Fragment {
 
     /**
      * Called when View was created and used to initialize dynamic fragment content
-     * @param view the created View
+     *
+     * @param view               the created View
      * @param savedInstanceState bundle with data for re-initialization
      */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view,savedInstanceState);
+        super.onViewCreated(view, savedInstanceState);
         initDetails();
     }
 
@@ -87,11 +91,11 @@ public class ContactDetailFragment extends Fragment {
         ((TextView) view.findViewById(R.id.contactMail)).setText(contact.getMail());
 
         de.hska.mycontacts.model.Address address = contact.getAddress();
-        if(!address.getStreet().isEmpty() && !address.getNumber().isEmpty()) {
+        if (!address.getStreet().isEmpty() && !address.getNumber().isEmpty()) {
             ((TextView) view.findViewById(R.id.contactStreet)).setText(address.getStreet() + " " + address.getNumber());
         }
-        if(!address.getZipCode().isEmpty() && !address.getCity().isEmpty()){
-            ((TextView) view.findViewById(R.id.contactCity)).setText(address.getZipCode()  + " " +address.getCity());
+        if (!address.getZipCode().isEmpty() && !address.getCity().isEmpty()) {
+            ((TextView) view.findViewById(R.id.contactCity)).setText(address.getZipCode() + " " + address.getCity());
         }
         ((TextView) view.findViewById(R.id.contactCountry)).setText(address.getCountry());
     }

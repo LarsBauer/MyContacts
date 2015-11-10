@@ -1,7 +1,7 @@
 package de.hska.mycontacts.util;
 
 /**
- * Created by larsbauer on 10.11.15.
+ * Contains carious constants which are used across multiple classes
  */
 public class Constants {
 

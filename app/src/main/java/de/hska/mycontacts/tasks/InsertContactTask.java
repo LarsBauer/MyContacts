@@ -23,6 +23,7 @@ public class InsertContactTask extends AsyncTask<Contact, Void, Contact> {
 
     /**
      * Constructor for InsertContactTask
+     *
      * @param context the context
      */
     public InsertContactTask(Context context) {
@@ -39,6 +40,7 @@ public class InsertContactTask extends AsyncTask<Contact, Void, Contact> {
 
     /**
      * Runs on background thread and inserts contact in database
+     *
      * @param params
      * @return row id of the inserted entry or -1 if an error occurred
      */
@@ -51,15 +53,16 @@ public class InsertContactTask extends AsyncTask<Contact, Void, Contact> {
 
     /**
      * Runs on UI thread and is used to give user feedback and redirect to ContactsDetailActivity of newly created Contact
+     *
      * @param insertedContact inserted Contact or null if an error occurred
      */
     @Override
     protected void onPostExecute(Contact insertedContact) {
         dialog.dismiss();
-        if(insertedContact == null) {
-            Toast.makeText(ctx,"Could not add contact to database.", Toast.LENGTH_SHORT).show();
+        if (insertedContact == null) {
+            Toast.makeText(ctx, "Could not add contact to database.", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(ctx,"Added contact to database.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, "Added contact to database.", Toast.LENGTH_SHORT).show();
             Intent detailIntent = new Intent(ctx, ContactDetailActivity.class);
             detailIntent.putExtra(PARCEL_CONTACT, insertedContact);
             ctx.startActivity(detailIntent);

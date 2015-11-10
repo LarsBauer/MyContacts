@@ -24,6 +24,11 @@ public class GeocodingTask extends AsyncTask<Address, Void, List<android.locatio
     private ProgressDialog dialog;
     private String errorMessage = "";
 
+    /**
+     * Constructor for GeocodingTask
+     *
+     * @param context the context
+     */
     public GeocodingTask(Context context) {
         ctx = context;
     }
@@ -38,6 +43,7 @@ public class GeocodingTask extends AsyncTask<Address, Void, List<android.locatio
 
     /**
      * Runs on background thread and resolves given Address by using Google Geocoder
+     *
      * @param params Address which should be resolved
      * @return list of Addresses including latitude and longitude or empty list of no matches were found
      */
@@ -61,6 +67,7 @@ public class GeocodingTask extends AsyncTask<Address, Void, List<android.locatio
 
     /**
      * Helper method to create query string from Address object
+     *
      * @param address the Address which should be resolved
      * @return query string including all Address fields
      */
@@ -78,6 +85,7 @@ public class GeocodingTask extends AsyncTask<Address, Void, List<android.locatio
 
     /**
      * Runs on UI thread and is used to give user feedback and set found Address to ContactMapFragment
+     *
      * @param addresses
      */
     @Override

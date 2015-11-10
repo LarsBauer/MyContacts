@@ -7,19 +7,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
-import de.hska.mycontacts.dao.DatabaseSchema.ContactEntry;
 import de.hska.mycontacts.dao.DatabaseSchema.AddressEntry;
+import de.hska.mycontacts.dao.DatabaseSchema.ContactEntry;
 import de.hska.mycontacts.model.Address;
 import de.hska.mycontacts.model.Contact;
 
 /**
  * Helper class to create SQLite database, table schemas and insert values
  */
-public class ContactsDBHelper extends SQLiteOpenHelper{
+public class ContactsDBHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 6;
     public static final String DATABASE_NAME = "contacts.db";
@@ -31,7 +29,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
                     AddressEntry.COLUMN_NAME_ZIPCODE + " TEXT," +
                     AddressEntry.COLUMN_NAME_CITY + " TEXT," +
                     AddressEntry.COLUMN_NAME_COUNTRY + " TEXT" +
-            ");";
+                    ");";
     private static final String SQL_CREATE_TABLE_CONTACT =
             "CREATE TABLE " + ContactEntry.TABLE_NAME + " (" +
                     ContactEntry._ID + " INTEGER PRIMARY KEY," +
@@ -42,7 +40,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
                     ContactEntry.COLUMN_NAME_MAIL + " TEXT," +
                     ContactEntry.COLUMN_ADDRESS_FK + " INTEGER," +
                     "FOREIGN KEY(" + ContactEntry.COLUMN_ADDRESS_FK + ") REFERENCES " + AddressEntry.TABLE_NAME + "(" + AddressEntry._ID + ")" +
-            ")";
+                    ")";
     private static final String SQL_DROP_TABLE_CONTACT = "DROP TABLE IF EXISTS " + ContactEntry.TABLE_NAME + ";";
     private static final String SQL_DROP_TABLE_ADDRESS = "DROP TABLE IF EXISTS " + AddressEntry.TABLE_NAME + ";";
 
@@ -51,6 +49,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Private constructor for ContactsDBHelper to prevent instantiation
+     *
      * @param context context
      */
     private ContactsDBHelper(Context context) {
@@ -60,11 +59,12 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Using singleton pattern to retrieve instance of database helper
+     *
      * @param ctx context
      * @return new instance of ContactsDBHelper or existing one
      */
     public static ContactsDBHelper getInstance(Context ctx) {
-        if(instance == null) {
+        if (instance == null) {
             return new ContactsDBHelper(ctx.getApplicationContext());
         }
         return instance;
@@ -72,7 +72,8 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Used by Loader to retrieve all Contacts from database
-     * @return Cursor with all rows
+     *
+     * @return Cursor containing all rows
      */
     public Cursor findAllContacts() {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
@@ -83,13 +84,14 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Inserts Contact into SQLite database
+     *
      * @param contact the Contact which should be persisted
-     * @return updated Contact or null if an error occurred
+     * @return inserted Contact or null if an error occurred
      */
     public Contact insertContact(Contact contact) {
 
         Address address = insertAddress(contact.getAddress());
-        if(address == null) {
+        if (address == null) {
             return null;
         }
 
@@ -99,7 +101,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
         values.put(ContactEntry.COLUMN_ADDRESS_FK, contact.getAddress().getId());
 
         long contactId = getWritableDatabase().insert(ContactEntry.TABLE_NAME, null, values);
-        if(contactId == -1) {
+        if (contactId == -1) {
             return null;
         }
 
@@ -109,14 +111,15 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Inserts Address into SQLite database
+     *
      * @param address the Adress which should be persisted
-     * @return updated Address or null if an error occurred
+     * @return inserted Address or null if an error occurred
      */
     private Address insertAddress(Address address) {
         ContentValues values = getAddressValues(address);
 
         long id = getWritableDatabase().insert(AddressEntry.TABLE_NAME, null, values);
-        if(id == -1) {
+        if (id == -1) {
             return null;
         }
         address.setId(id);
@@ -125,13 +128,14 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Updates given Contact in SQLite database
+     *
      * @param contact the Contact which should be updated
      * @return number of rows affected
      */
     public int updateContact(Contact contact) {
 
         int affected = updateAddress(contact.getAddress());
-        if(affected != 1) {
+        if (affected != 1) {
             return affected;
         }
 
@@ -147,6 +151,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Updates given Address in SQLite database
+     *
      * @param address the Address which should be updated
      * @return number of rows affected
      */
@@ -162,6 +167,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Deletes given Contact from SQLite database
+     *
      * @param contact the Contact which should be deleted
      * @return number of rows affected
      */
@@ -170,7 +176,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
         String[] whereArgs = new String[]{String.valueOf(contact.getId())};
 
         int affected = deleteAddress(contact.getAddress());
-        if(affected != 1) {
+        if (affected != 1) {
             return affected;
         }
 
@@ -179,6 +185,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Deletes given Address from SQLite database
+     *
      * @param address the Address which should be deleted
      * @return number of rows affected
      */
@@ -191,6 +198,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Helper method which creates ContentValues for Contact
+     *
      * @param contact the Contact
      * @return ContentValues including all database columns
      */
@@ -199,7 +207,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
         values.put(ContactEntry.COLUMN_NAME_FIRSTNAME, contact.getFirstName());
         values.put(ContactEntry.COLUMN_NAME_LASTNAME, contact.getLastName());
         Uri image = contact.getImage();
-        if(image == null) {
+        if (image == null) {
             contact.setImage(Uri.parse(""));
         }
         values.put(ContactEntry.COLUMN_NAME_IMAGE_PATH, contact.getImage().getPath());
@@ -211,6 +219,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Helper method which creates ContentValues for Address
+     *
      * @param address the Address
      * @return ContentValues including all database columns
      */
@@ -226,6 +235,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Called when database gets created for first time and used to create tables
+     *
      * @param db the database
      */
     @Override
@@ -236,7 +246,8 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Called when database version gets upgraded or tables get changed
-     * @param db the database
+     *
+     * @param db         the database
      * @param oldVersion old database version number
      * @param newVersion new database version number
      */
@@ -249,7 +260,8 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
     /**
      * Called when database version gets downgraded
-     * @param db the database
+     *
+     * @param db         the database
      * @param oldVersion old database version number
      * @param newVersion new database version number
      */
