@@ -87,8 +87,12 @@ public class ContactDetailFragment extends Fragment {
         ((TextView) view.findViewById(R.id.contactMail)).setText(contact.getMail());
 
         de.hska.mycontacts.model.Address address = contact.getAddress();
-        ((TextView) view.findViewById(R.id.contactStreet)).setText(address.getStreet() + " " + address.getNumber());
-        ((TextView) view.findViewById(R.id.contactCity)).setText(address.getZipCode() + " " +address.getCity());
+        if(!address.getStreet().isEmpty() && !address.getNumber().isEmpty()) {
+            ((TextView) view.findViewById(R.id.contactStreet)).setText(address.getStreet() + " " + address.getNumber());
+        }
+        if(!address.getZipCode().isEmpty() && !address.getCity().isEmpty()){
+            ((TextView) view.findViewById(R.id.contactCity)).setText(address.getZipCode()  + " " +address.getCity());
+        }
         ((TextView) view.findViewById(R.id.contactCountry)).setText(address.getCountry());
     }
 
