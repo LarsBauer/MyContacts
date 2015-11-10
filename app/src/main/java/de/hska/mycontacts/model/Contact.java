@@ -102,6 +102,7 @@ public class Contact implements Parcelable{
     @Override
     public String toString() {
         return "Contact{" +
+                "id=" + id +
                 "image=" + image +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
@@ -127,6 +128,7 @@ public class Contact implements Parcelable{
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
         dest.writeString(firstName);
         dest.writeString(lastName);
         dest.writeString(image.getPath());
@@ -164,6 +166,7 @@ public class Contact implements Parcelable{
      * @param in Parcel to deserialize
      */
     private Contact(Parcel in) {
+        id = in.readLong();
         firstName = in.readString();
         lastName = in.readString();
         image = Uri.parse(in.readString());

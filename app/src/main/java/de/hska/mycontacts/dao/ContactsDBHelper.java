@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import de.hska.mycontacts.dao.DatabaseSchema.ContactEntry;
 import de.hska.mycontacts.dao.DatabaseSchema.AddressEntry;
@@ -21,7 +22,7 @@ import de.hska.mycontacts.model.Contact;
 public class ContactsDBHelper extends SQLiteOpenHelper{
 
     public static final int DATABASE_VERSION = 6;
-    public static final String DATABASE_NAME = "Contacts.db";
+    public static final String DATABASE_NAME = "contacts.db";
     private static final String SQL_CREATE_TABLE_ADDRESS =
             "CREATE TABLE " + AddressEntry.TABLE_NAME + " (" +
                     AddressEntry._ID + " INTEGER PRIMARY KEY," +
@@ -77,50 +78,49 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String sortOrder = ContactEntry.COLUMN_NAME_LASTNAME + " ASC";
         qb.setTables(ContactEntry.TABLE_NAME + " JOIN " + AddressEntry.TABLE_NAME + " ON " + ContactEntry.TABLE_NAME + "." + ContactEntry.COLUMN_ADDRESS_FK + "=" + AddressEntry.TABLE_NAME + "." + AddressEntry._ID);
-        return qb.query(getReadableDatabase(), null,null, null, null, null, sortOrder);
+        return qb.query(getReadableDatabase(), null, null, null, null, null, sortOrder);
     }
 
     /**
      * Inserts Contact into SQLite database
      * @param contact the Contact which should be persisted
-     * @return row id of created entry or -1 if an error occurred
+     * @return updated Contact or null if an error occurred
      */
-    public long insertContact(Contact contact) {
+    public Contact insertContact(Contact contact) {
 
-        long addressId = insertAddress(contact.getAddress());
-        if(addressId == -1) {
-            return -1;
+        Address address = insertAddress(contact.getAddress());
+        if(address == null) {
+            return null;
         }
 
-        ContentValues values = new ContentValues();
-        values.put(ContactEntry.COLUMN_NAME_FIRSTNAME, contact.getFirstName());
-        values.put(ContactEntry.COLUMN_NAME_LASTNAME, contact.getLastName());
-        Uri image = contact.getImage();
-        if(image == null) {
-            contact.setImage(Uri.parse(""));
-        }
-        values.put(ContactEntry.COLUMN_NAME_IMAGE_PATH, contact.getImage().getPath());
-        values.put(ContactEntry.COLUMN_NAME_MAIL, contact.getMail());
-        values.put(ContactEntry.COLUMN_NAME_PHONE, contact.getPhone());
-        values.put(ContactEntry.COLUMN_ADDRESS_FK, addressId);
+        contact.setAddress(address);
 
-        return getWritableDatabase().insert(ContactEntry.TABLE_NAME, null, values);
+        ContentValues values = getContactValues(contact);
+        values.put(ContactEntry.COLUMN_ADDRESS_FK, contact.getAddress().getId());
+
+        long contactId = getWritableDatabase().insert(ContactEntry.TABLE_NAME, null, values);
+        if(contactId == -1) {
+            return null;
+        }
+
+        contact.setId(contactId);
+        return contact;
     }
 
     /**
      * Inserts Address into SQLite database
      * @param address the Adress which should be persisted
-     * @return row id of the created entry or -1 if an error occurred
+     * @return updated Address or null if an error occurred
      */
-    private long insertAddress(Address address) {
-        ContentValues values = new ContentValues();
-        values.put(AddressEntry.COLUMN_NAME_STREET, address.getStreet());
-        values.put(AddressEntry.COLUMN_NAME_NUMBER, address.getNumber());
-        values.put(AddressEntry.COLUMN_NAME_ZIPCODE, address.getZipCode());
-        values.put(AddressEntry.COLUMN_NAME_CITY, address.getCity());
-        values.put(AddressEntry.COLUMN_NAME_COUNTRY, address.getCountry());
+    private Address insertAddress(Address address) {
+        ContentValues values = getAddressValues(address);
 
-        return getWritableDatabase().insert(AddressEntry.TABLE_NAME, null, values);
+        long id = getWritableDatabase().insert(AddressEntry.TABLE_NAME, null, values);
+        if(id == -1) {
+            return null;
+        }
+        address.setId(id);
+        return address;
     }
 
     /**
@@ -129,17 +129,18 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
      * @return number of rows affected
      */
     public int updateContact(Contact contact) {
-        String whereClause = ContactEntry._ID + " = ?";
-        String[] whereArgs = {String.valueOf(contact.getId())};
 
         int affected = updateAddress(contact.getAddress());
         if(affected == 0) {
-            //TODO error handling
             return affected;
         }
 
-        //TODO not implemented yet
-        ContentValues values = new ContentValues();
+        String whereClause = ContactEntry._ID + "=?";
+        String[] whereArgs = new String[]{String.valueOf(contact.getId())};
+
+        ContentValues values = getContactValues(contact);
+        values.put(ContactEntry.COLUMN_ADDRESS_FK, contact.getAddress().getId());
+        Log.d("ContactsDBHelper", "updateContact: " + contact.toString());
 
         return getWritableDatabase().update(ContactEntry.TABLE_NAME, values, whereClause, whereArgs);
     }
@@ -150,11 +151,11 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
      * @return number of rows affected
      */
     private int updateAddress(Address address) {
-        String whereClause = AddressEntry._ID + " = ?";
-        String[] whereArgs = {String.valueOf(address.getId())};
+        String whereClause = AddressEntry._ID + "=?";
+        String[] whereArgs = new String[]{String.valueOf(address.getId())};
 
-        //TODO not implemented yet
-        ContentValues values = new ContentValues();
+        ContentValues values = getAddressValues(address);
+        Log.d("ContactsDBHelper", "updateAddress: " + address.toString());
 
         return getWritableDatabase().update(AddressEntry.TABLE_NAME, values, whereClause, whereArgs);
     }
@@ -170,7 +171,6 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
 
         int affected = deleteAddress(contact.getAddress());
         if(affected == 0) {
-            //TODO error handling
             return affected;
         }
 
@@ -187,6 +187,41 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
         String[] whereArgs = {String.valueOf(address.getId())};
 
         return getWritableDatabase().delete(AddressEntry.TABLE_NAME, whereClause, whereArgs);
+    }
+
+    /**
+     * Helper method which creates ContentValues for Contact
+     * @param contact the Contact
+     * @return ContentValues including all database columns
+     */
+    private ContentValues getContactValues(Contact contact) {
+        ContentValues values = new ContentValues();
+        values.put(ContactEntry.COLUMN_NAME_FIRSTNAME, contact.getFirstName());
+        values.put(ContactEntry.COLUMN_NAME_LASTNAME, contact.getLastName());
+        Uri image = contact.getImage();
+        if(image == null) {
+            contact.setImage(Uri.parse(""));
+        }
+        values.put(ContactEntry.COLUMN_NAME_IMAGE_PATH, contact.getImage().getPath());
+        values.put(ContactEntry.COLUMN_NAME_MAIL, contact.getMail());
+        values.put(ContactEntry.COLUMN_NAME_PHONE, contact.getPhone());
+
+        return values;
+    }
+
+    /**
+     * Helper method which creates ContentValues for Address
+     * @param address the Address
+     * @return ContentValues including all database columns
+     */
+    private ContentValues getAddressValues(Address address) {
+        ContentValues values = new ContentValues();
+        values.put(AddressEntry.COLUMN_NAME_STREET, address.getStreet());
+        values.put(AddressEntry.COLUMN_NAME_NUMBER, address.getNumber());
+        values.put(AddressEntry.COLUMN_NAME_ZIPCODE, address.getZipCode());
+        values.put(AddressEntry.COLUMN_NAME_CITY, address.getCity());
+        values.put(AddressEntry.COLUMN_NAME_COUNTRY, address.getCountry());
+        return values;
     }
 
     /**

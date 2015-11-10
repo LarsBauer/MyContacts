@@ -5,26 +5,29 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 
 import de.hska.mycontacts.R;
 import de.hska.mycontacts.fragments.ContactFragmentPagerAdapter;
 import de.hska.mycontacts.model.Contact;
+import static de.hska.mycontacts.util.Constants.*;
 
 /**
  * Activity to display contact details
  */
-public class ContactDetailActivity extends FragmentActivity {
-
-    private static final String PARCEL_CONTACT = "de.hska.mycontacts.model.Contact";
+public class ContactDetailActivity extends AppCompatActivity {
 
     private Contact contact;
     private ImageView imageView;
@@ -38,6 +41,16 @@ public class ContactDetailActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
+
+        FloatingActionButton editButton = (FloatingActionButton) findViewById(R.id.editButton);
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editItent = new Intent(ContactDetailActivity.this, EditContactActivity.class);
+                editItent.putExtra(PARCEL_CONTACT, contact);
+                startActivity(editItent);
+            }
+        });
 
         contact = getIntent().getParcelableExtra(PARCEL_CONTACT);
         initHeaderContent();
@@ -62,6 +75,24 @@ public class ContactDetailActivity extends FragmentActivity {
         ((TextView) findViewById(R.id.contactFirstname)).setText(contact.getFirstName());
         ((TextView) findViewById(R.id.contactLastname)).setText(contact.getLastName());
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_contact_details, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                //TODO show dialog to confirm, delete contact and redirect to list
+                Toast.makeText(this, "Delete contact not implemented yet.", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**

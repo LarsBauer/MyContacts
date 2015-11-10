@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -16,10 +14,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import de.hska.mycontacts.R;
 import de.hska.mycontacts.dao.ContactsDBHelper;
-import de.hska.mycontacts.dao.DatabaseSchema.AddressEntry;
 import de.hska.mycontacts.dao.DatabaseSchema.ContactEntry;
 import de.hska.mycontacts.util.ContactMapper;
 
@@ -33,6 +31,7 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
 
     private SimpleCursorAdapter adapter;
     private ListView contactListView;
+    private int backButtonCount = 0;
 
     /**
      * Used to initialize the layout and field of the Activity
@@ -132,5 +131,26 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.changeCursor(null);
+    }
+
+    /**
+     * Gets called when user presses back button on device and is used to close the application
+     */
+    @Override
+    public void onBackPressed()
+    {
+        if(backButtonCount > 1)
+        {
+            backButtonCount = 0;
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        else
+        {
+            Toast.makeText(this, "Press again to exit the application", Toast.LENGTH_SHORT).show();
+            backButtonCount++;
+        }
     }
 }

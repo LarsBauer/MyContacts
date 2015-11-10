@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="8dp"
-    tools:context="de.hska.mycontacts.activities.CreateContactActivity">
+    tools:context="de.hska.mycontacts.activities.EditContactActivity">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -56,7 +56,7 @@
                         android:orientation="vertical">
 
                         <EditText
-                            android:id="@+id/firstnameInput"
+                            android:id="@+id/firstnameEdit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -65,7 +65,7 @@
                             android:inputType="textCapWords|textPersonName" />
 
                         <EditText
-                            android:id="@+id/lastnameInput"
+                            android:id="@+id/lastnameEdit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -152,7 +152,7 @@
                             android:src="@drawable/ic_phone_black" />
 
                         <EditText
-                            android:id="@+id/phoneInput"
+                            android:id="@+id/phoneEdit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -177,7 +177,7 @@
                             android:src="@drawable/ic_email_black" />
 
                         <EditText
-                            android:id="@+id/mailInput"
+                            android:id="@+id/mailEdit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -227,7 +227,7 @@
                             android:orientation="horizontal">
 
                             <EditText
-                                android:id="@+id/streetInput"
+                                android:id="@+id/streetEdit"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -238,7 +238,7 @@
                                 android:nextFocusDown="@+id/contactNumber" />
 
                             <EditText
-                                android:id="@+id/contactNumber"
+                                android:id="@+id/numberEdit"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -255,7 +255,7 @@
                             android:orientation="horizontal">
 
                             <EditText
-                                android:id="@+id/contactZipcode"
+                                android:id="@+id/zipcodeEdit"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -266,7 +266,7 @@
                                 android:nextFocusDown="@+id/contactCity" />
 
                             <EditText
-                                android:id="@+id/contactCity"
+                                android:id="@+id/cityEdit"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -276,7 +276,7 @@
                         </LinearLayout>
 
                         <EditText
-                            android:id="@+id/countryInput"
+                            android:id="@+id/countryEdit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -286,18 +286,9 @@
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
-            <!--
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Save"
-                android:id="@+id/saveButton"
-                android:layout_below="@+id/addressCard"
-                android:layout_alignRight="@+id/addressCard"
-                android:layout_alignEnd="@+id/addressCard" />
-                -->
         </LinearLayout>
     </ScrollView>
 
 
 </RelativeLayout>
+

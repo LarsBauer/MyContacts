@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,11 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -33,15 +30,25 @@ import java.util.List;
 import de.hska.mycontacts.R;
 import de.hska.mycontacts.model.Address;
 import de.hska.mycontacts.model.Contact;
-import de.hska.mycontacts.tasks.InsertContactTask;
-import static de.hska.mycontacts.util.Constants.*;
+import de.hska.mycontacts.tasks.UpdateContactTask;
+import de.hska.mycontacts.util.Constants;
+
+import static de.hska.mycontacts.util.Constants.DIALOG_CAPTURE_IMAGE;
+import static de.hska.mycontacts.util.Constants.DIALOG_CHOOSE_IMAGE;
+import static de.hska.mycontacts.util.Constants.DIALOG_OPTIONS;
+import static de.hska.mycontacts.util.Constants.DIALOG_TITLE;
+import static de.hska.mycontacts.util.Constants.PARCEL_CONTACT;
+import static de.hska.mycontacts.util.Constants.REQUEST_IMAGE_CAPTURE;
+import static de.hska.mycontacts.util.Constants.REQUEST_IMAGE_CHOOSE;
+import static de.hska.mycontacts.util.Constants.REQUEST_IMAGE_CROP;
 
 /**
- * Activity used to create new contacts
+ * Activity to edit Contacts and save changes to SQLite database
  */
-public class CreateContactActivity extends AppCompatActivity {
+public class EditContactActivity extends AppCompatActivity {
 
-    private Contact contact = new Contact();
+    private Contact updatedContact;
+    private Contact contact;
     private AlertDialog.Builder builder;
 
     /**
@@ -51,7 +58,11 @@ public class CreateContactActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_contact);
+        setContentView(R.layout.activity_edit_contact);
+
+        contact = getIntent().getParcelableExtra(Constants.PARCEL_CONTACT);
+        updatedContact = contact;
+        initContent();
 
         builder = new AlertDialog.Builder(this);
 
@@ -89,59 +100,69 @@ public class CreateContactActivity extends AppCompatActivity {
             }
         });
 
-//        Button saveButton = (Button) findViewById(R.id.saveButton);
-//        saveButton.setOnClickListener(new View.OnClickListener() {
-//            /**
-//             * OnClickListener for save button triggers insert into database
-//             * @param v clicked View
-//             */
-//            @Override
-//            public void onClick(View v) {
-//                saveContact();
-//            }
-//        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_create_contact, menu);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.action_cancel:
-                Intent listIntent = new Intent(this, ContactListActivity.class);
-                startActivity(listIntent);
-                return true;
+        switch (item.getItemId()) {
             case R.id.action_save:
-                saveContact();
+                updateContact();
                 return true;
+            case R.id.action_cancel:
+                Intent detailIntent = new Intent(this, ContactDetailActivity.class);
+                detailIntent.putExtra(PARCEL_CONTACT, contact);
+                startActivity(detailIntent);
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     /**
-     * Creates new Contact and Address and starts AsyncTask for database insert
+     * Initializes EditText views
      */
-    private void saveContact() {
-        Address address = new Address();
-        address.setStreet(getStringValue(R.id.streetInput));
-        address.setNumber(getStringValue(R.id.contactNumber));
-        address.setZipCode(getStringValue(R.id.contactZipcode));
-        address.setCity(getStringValue(R.id.contactCity));
-        address.setCountry(getStringValue(R.id.countryInput));
+    private void initContent() {
+        ((EditText)findViewById(R.id.firstnameEdit)).setText(updatedContact.getFirstName());
+        ((EditText)findViewById(R.id.lastnameEdit)).setText(updatedContact.getLastName());
+        Uri image = updatedContact.getImage();
+        if (image != null && new File(image.getPath()).exists()) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(updatedContact.getImage().getPath());
+            ((ImageView) findViewById(R.id.imagePreview)).setImageBitmap(myBitmap);
+        }
+        ((EditText)findViewById(R.id.phoneEdit)).setText(updatedContact.getPhone());
+        ((EditText)findViewById(R.id.mailEdit)).setText(updatedContact.getMail());
+        Address address = updatedContact.getAddress();
+        ((EditText)findViewById(R.id.streetEdit)).setText(address.getStreet());
+        ((EditText)findViewById(R.id.numberEdit)).setText(address.getNumber());
+        ((EditText)findViewById(R.id.zipcodeEdit)).setText(address.getZipCode());
+        ((EditText)findViewById(R.id.cityEdit)).setText(address.getCity());
+        ((EditText)findViewById(R.id.countryEdit)).setText(address.getCountry());
+    }
 
-        contact.setAddress(address);
-        contact.setFirstName(getStringValue(R.id.firstnameInput));
-        contact.setLastName(getStringValue(R.id.lastnameInput));
-        contact.setPhone(getStringValue(R.id.phoneInput));
-        contact.setMail(getStringValue(R.id.mailInput));
+    /**
+     * Retrieves Contact and Address field from UI and starts AsyncTask for database update
+     */
+    private void updateContact() {
+        Address address = updatedContact.getAddress();
+        address.setStreet(getStringValue(R.id.streetEdit));
+        address.setNumber(getStringValue(R.id.numberEdit));
+        address.setZipCode(getStringValue(R.id.zipcodeEdit));
+        address.setCity(getStringValue(R.id.cityEdit));
+        address.setCountry(getStringValue(R.id.countryEdit));
 
-        InsertContactTask insertTask = new InsertContactTask(this);
-        insertTask.execute(contact);
+        updatedContact.setAddress(address);
+        updatedContact.setFirstName(getStringValue(R.id.firstnameEdit));
+        updatedContact.setLastName(getStringValue(R.id.lastnameEdit));
+        updatedContact.setPhone(getStringValue(R.id.phoneEdit));
+        updatedContact.setMail(getStringValue(R.id.mailEdit));
+
+        UpdateContactTask updateTask = new UpdateContactTask(this);
+        updateTask.execute(updatedContact);
     }
 
     /**
@@ -156,36 +177,6 @@ public class CreateContactActivity extends AppCompatActivity {
             return textField.getText().toString();
         }
         return "";
-    }
-
-    /**
-     * Callback for startActivityForResult gets used to process result of intents
-     * @param requestCode request code of the started intent
-     * @param resultCode status code to determine whether intent was successful
-     * @param data returned data of the intent
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_IMAGE_CAPTURE:
-                    cropImage();
-                    break;
-                case REQUEST_IMAGE_CHOOSE:
-                    contact.setImage(data.getData());
-                    cropImage();
-                    break;
-                case REQUEST_IMAGE_CROP:
-                    ImageView preview = (ImageView) findViewById(R.id.imagePreview);
-                    Bitmap tmp = data.getExtras().getParcelable("data");
-                    preview.setImageBitmap(tmp);
-                    break;
-                default:
-                    super.onActivityResult(requestCode, resultCode, data);
-            }
-        } else {
-            Toast.makeText(this, "Whoops - something went wrong!", Toast.LENGTH_SHORT).show();
-        }
     }
 
     /**
@@ -204,12 +195,12 @@ public class CreateContactActivity extends AppCompatActivity {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (isIntentSupported(cameraIntent)) {
             try {
-                contact.setImage(Uri.fromFile(createImageFile()));
+                updatedContact.setImage(Uri.fromFile(createImageFile()));
             } catch (IOException ex) {
                 Toast.makeText(this, "Whoops - could not access external storage!", Toast.LENGTH_SHORT).show();
             }
-            if (contact.getImage() != null) {
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, contact.getImage());
+            if (updatedContact.getImage() != null) {
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, updatedContact.getImage());
                 try {
                     startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
                 } catch (ActivityNotFoundException e) {
@@ -226,14 +217,14 @@ public class CreateContactActivity extends AppCompatActivity {
      */
     private void cropImage() {
         Intent cropIntent = new Intent("com.android.camera.action.CROP");
-        cropIntent.setDataAndType(contact.getImage(), "image/*");
+        cropIntent.setDataAndType(updatedContact.getImage(), "image/*");
         cropIntent.putExtra("crop", "true");
         cropIntent.putExtra("aspectX", 1);
         cropIntent.putExtra("aspectY", 1);
         cropIntent.putExtra("outputX", 500);
         cropIntent.putExtra("outputY", 500);
         cropIntent.putExtra("return-data", true);
-        cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, contact.getImage());
+        cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, updatedContact.getImage());
         try {
             startActivityForResult(cropIntent, REQUEST_IMAGE_CROP);
         } catch (ActivityNotFoundException e) {
@@ -268,24 +259,4 @@ public class CreateContactActivity extends AppCompatActivity {
         return !activities.isEmpty();
     }
 
-    /**
-     * Helper method to copy chosen image from gallery into App's private file storage
-     * @param src source File
-     * @param dst destination File
-     * @throws IOException if copy process fails
-     */
-    //TODO copy image to app media store
-    private void copyFile(File src, File dst) throws IOException {
-        InputStream in = new FileInputStream(src);
-        OutputStream out = new FileOutputStream(dst);
-
-        // Transfer bytes from in to out
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
-        in.close();
-        out.close();
-    }
 }

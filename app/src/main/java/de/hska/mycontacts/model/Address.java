@@ -91,6 +91,7 @@ public class Address implements Parcelable{
     @Override
     public String toString() {
         return "Address{" +
+                "id=" + id +
                 "street='" + street + '\'' +
                 ", number='" + number + '\'' +
                 ", zipCode='" + zipCode + '\'' +
@@ -115,6 +116,7 @@ public class Address implements Parcelable{
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
         dest.writeString(street);
         dest.writeString(number);
         dest.writeString(zipCode);
@@ -151,6 +153,7 @@ public class Address implements Parcelable{
      * @param in Parcel to deserialize
      */
     private Address(Parcel in) {
+        id = in.readLong();
         street = in.readString();
         number = in.readString();
         zipCode = in.readString();
