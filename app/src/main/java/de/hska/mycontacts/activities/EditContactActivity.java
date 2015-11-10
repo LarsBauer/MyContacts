@@ -35,8 +35,8 @@ import de.hska.mycontacts.util.Constants;
 
 import static de.hska.mycontacts.util.Constants.DIALOG_CAPTURE_IMAGE;
 import static de.hska.mycontacts.util.Constants.DIALOG_CHOOSE_IMAGE;
-import static de.hska.mycontacts.util.Constants.DIALOG_OPTIONS;
-import static de.hska.mycontacts.util.Constants.DIALOG_TITLE;
+import static de.hska.mycontacts.util.Constants.DIALOG_IMAGE_OPTIONS;
+import static de.hska.mycontacts.util.Constants.DIALOG_IMAGE_TITLE;
 import static de.hska.mycontacts.util.Constants.PARCEL_CONTACT;
 import static de.hska.mycontacts.util.Constants.REQUEST_IMAGE_CAPTURE;
 import static de.hska.mycontacts.util.Constants.REQUEST_IMAGE_CHOOSE;
@@ -74,8 +74,8 @@ public class EditContactActivity extends AppCompatActivity {
              */
             @Override
             public void onClick(View v) {
-                builder.setTitle(DIALOG_TITLE);
-                builder.setItems(DIALOG_OPTIONS, new DialogInterface.OnClickListener() {
+                builder.setTitle(DIALOG_IMAGE_TITLE);
+                builder.setItems(DIALOG_IMAGE_OPTIONS, new DialogInterface.OnClickListener() {
                     /**
                      * OnClickListener for dialog options to let user decide whether to open camera or choose existing image
                      * @param dialog clicked Dialog
@@ -83,7 +83,7 @@ public class EditContactActivity extends AppCompatActivity {
                      */
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String selected = (String) DIALOG_OPTIONS[which];
+                        String selected = (String) DIALOG_IMAGE_OPTIONS[which];
                         switch (selected) {
                             case DIALOG_CAPTURE_IMAGE:
                                 captureImage();

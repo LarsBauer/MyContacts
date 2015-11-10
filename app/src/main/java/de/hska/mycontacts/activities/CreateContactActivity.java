@@ -1,6 +1,7 @@
 package de.hska.mycontacts.activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,18 +43,15 @@ import static de.hska.mycontacts.util.Constants.*;
 public class CreateContactActivity extends AppCompatActivity {
 
     private Contact contact = new Contact();
-    private AlertDialog.Builder builder;
 
     /**
      * Used to initialize the layout and field of the Activity
      * @param savedInstanceState bundle with data for re-initialization
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_contact);
-
-        builder = new AlertDialog.Builder(this);
 
         Button cameraButton = (Button) findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(new View.OnClickListener() {
@@ -63,29 +61,8 @@ public class CreateContactActivity extends AppCompatActivity {
              */
             @Override
             public void onClick(View v) {
-                builder.setTitle(DIALOG_TITLE);
-                builder.setItems(DIALOG_OPTIONS, new DialogInterface.OnClickListener() {
-                    /**
-                     * OnClickListener for dialog options to let user decide whether to open camera or choose existing image
-                     * @param dialog clicked Dialog
-                     * @param which position of the clicked option
-                     */
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String selected = (String) DIALOG_OPTIONS[which];
-                        switch (selected) {
-                            case DIALOG_CAPTURE_IMAGE:
-                                captureImage();
-                                break;
-                            case DIALOG_CHOOSE_IMAGE:
-                                chooseImage();
-                                break;
-                            default:
-                                dialog.dismiss();
-                        }
-                    }
-                });
-                builder.show();
+                Dialog selectionDialog = getSelectionDialog();
+                selectionDialog.show();
             }
         });
 
@@ -266,6 +243,33 @@ public class CreateContactActivity extends AppCompatActivity {
         PackageManager packageManager = getPackageManager();
         List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
         return !activities.isEmpty();
+    }
+
+    private Dialog getSelectionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(DIALOG_IMAGE_TITLE);
+        builder.setItems(DIALOG_IMAGE_OPTIONS, new DialogInterface.OnClickListener() {
+            /**
+             * OnClickListener for dialog options to let user decide whether to open camera or choose existing image
+             * @param dialog clicked Dialog
+             * @param which position of the clicked option
+             */
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String selected = (String) DIALOG_IMAGE_OPTIONS[which];
+                switch (selected) {
+                    case DIALOG_CAPTURE_IMAGE:
+                        captureImage();
+                        break;
+                    case DIALOG_CHOOSE_IMAGE:
+                        chooseImage();
+                        break;
+                    default:
+                        dialog.dismiss();
+                }
+            }
+        });
+        return builder.create();
     }
 
     /**

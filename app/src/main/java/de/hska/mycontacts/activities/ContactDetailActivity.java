@@ -1,5 +1,8 @@
 package de.hska.mycontacts.activities;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,6 +25,8 @@ import java.io.File;
 import de.hska.mycontacts.R;
 import de.hska.mycontacts.fragments.ContactFragmentPagerAdapter;
 import de.hska.mycontacts.model.Contact;
+import de.hska.mycontacts.tasks.DeleteContactTask;
+
 import static de.hska.mycontacts.util.Constants.*;
 
 /**
@@ -77,6 +82,11 @@ public class ContactDetailActivity extends AppCompatActivity {
 
     }
 
+    private void deleteContact() {
+        DeleteContactTask deleteTask = new DeleteContactTask(this);
+        deleteTask.execute(contact);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_contact_details, menu);
@@ -87,8 +97,8 @@ public class ContactDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete:
-                //TODO show dialog to confirm, delete contact and redirect to list
-                Toast.makeText(this, "Delete contact not implemented yet.", Toast.LENGTH_SHORT).show();
+                Dialog confirmDialog = createConfirmDialog();
+                confirmDialog.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -111,5 +121,25 @@ public class ContactDetailActivity extends AppCompatActivity {
     public Fragment getCurrentFragment() {
         Fragment result = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewPager + ":" + pager.getCurrentItem());
         return result;
+    }
+
+    private Dialog createConfirmDialog() {
+        AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle(DIALOG_DELETE_TITLE)
+                .setMessage(DIALOG_DELETE_MESSAGE)
+                .setPositiveButton(DIALOG_DELETE_POSITIVE, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteContact();
+                    }
+                })
+                .setNegativeButton(DIALOG_DELETE_NEGATIVE, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        return builder.create();
     }
 }

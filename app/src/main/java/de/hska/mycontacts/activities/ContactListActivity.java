@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteCursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,7 +32,7 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
     private static final String PARCEL_CONTACT = "de.hska.mycontacts.model.Contact";
 
     private SimpleCursorAdapter adapter;
-    private ListView contactListView;
+    private ListView contactList;
     private int backButtonCount = 0;
 
     /**
@@ -65,11 +67,11 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
      * Used to initialize the CursorAdapter and layout of the ListView
      */
     private void initAdapter() {
-        String[] fromColumns = {ContactEntry.COLUMN_NAME_LASTNAME};
-        int[] toViews = {android.R.id.text1};
-        adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, null,fromColumns,toViews, 0);
-        contactListView = (ListView) findViewById(R.id.contactList);
-        contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        String[] fromColumns = {ContactEntry.COLUMN_NAME_LASTNAME, ContactEntry.COLUMN_NAME_FIRSTNAME};
+        int[] toViews = {android.R.id.text1, android.R.id.text2};
+        adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_2, null,fromColumns,toViews, 0);
+        contactList = (ListView) findViewById(R.id.contactList);
+        contactList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             /**
              * OnItemClickListener for item in ListView
              * @param parent where the click happened
@@ -85,7 +87,7 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
                 startActivity(detailIntent);
             }
         });
-        contactListView.setAdapter(adapter);
+        contactList.setAdapter(adapter);
     }
 
     /**
@@ -139,7 +141,7 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
     @Override
     public void onBackPressed()
     {
-        if(backButtonCount > 1)
+        if(backButtonCount >= 1)
         {
             backButtonCount = 0;
             Intent intent = new Intent(Intent.ACTION_MAIN);

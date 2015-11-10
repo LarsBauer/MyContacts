@@ -56,7 +56,7 @@ public class UpdateContactTask extends AsyncTask<Contact, Void, Integer> {
     @Override
     protected void onPostExecute(Integer affectedRows) {
         dialog.dismiss();
-        if(affectedRows == 0) {
+        if(affectedRows != 1) {
             Toast.makeText(ctx, "Could not update contact in database.", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(ctx,"Updated contact in database.", Toast.LENGTH_SHORT).show();

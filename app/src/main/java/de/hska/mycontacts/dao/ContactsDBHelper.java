@@ -131,7 +131,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
     public int updateContact(Contact contact) {
 
         int affected = updateAddress(contact.getAddress());
-        if(affected == 0) {
+        if(affected != 1) {
             return affected;
         }
 
@@ -166,11 +166,11 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
      * @return number of rows affected
      */
     public int deleteContact(Contact contact) {
-        String whereClause = ContactEntry._ID + " = ?";
-        String[] whereArgs = {String.valueOf(contact.getId())};
+        String whereClause = ContactEntry._ID + "=?";
+        String[] whereArgs = new String[]{String.valueOf(contact.getId())};
 
         int affected = deleteAddress(contact.getAddress());
-        if(affected == 0) {
+        if(affected != 1) {
             return affected;
         }
 
@@ -183,8 +183,8 @@ public class ContactsDBHelper extends SQLiteOpenHelper{
      * @return number of rows affected
      */
     private int deleteAddress(Address address) {
-        String whereClause = AddressEntry._ID + " = ?";
-        String[] whereArgs = {String.valueOf(address.getId())};
+        String whereClause = AddressEntry._ID + "=?";
+        String[] whereArgs = new String[]{String.valueOf(address.getId())};
 
         return getWritableDatabase().delete(AddressEntry.TABLE_NAME, whereClause, whereArgs);
     }

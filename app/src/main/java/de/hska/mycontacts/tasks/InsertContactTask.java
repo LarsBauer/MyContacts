@@ -51,17 +51,17 @@ public class InsertContactTask extends AsyncTask<Contact, Void, Contact> {
 
     /**
      * Runs on UI thread and is used to give user feedback and redirect to ContactsDetailActivity of newly created Contact
-     * @param updatedContact updated Contact or null if an error occurred
+     * @param insertedContact inserted Contact or null if an error occurred
      */
     @Override
-    protected void onPostExecute(Contact updatedContact) {
+    protected void onPostExecute(Contact insertedContact) {
         dialog.dismiss();
-        if(updatedContact == null) {
+        if(insertedContact == null) {
             Toast.makeText(ctx,"Could not add contact to database.", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(ctx,"Added contact to database.", Toast.LENGTH_SHORT).show();
             Intent detailIntent = new Intent(ctx, ContactDetailActivity.class);
-            detailIntent.putExtra(PARCEL_CONTACT, updatedContact);
+            detailIntent.putExtra(PARCEL_CONTACT, insertedContact);
             ctx.startActivity(detailIntent);
         }
     }
