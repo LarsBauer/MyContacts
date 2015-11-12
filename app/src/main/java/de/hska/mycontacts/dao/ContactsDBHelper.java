@@ -82,6 +82,15 @@ public class ContactsDBHelper extends SQLiteOpenHelper {
         return qb.query(getReadableDatabase(), null, null, null, null, null, sortOrder);
     }
 
+    public Cursor findContactsByName(String name) {
+        String whereClause = ContactEntry.COLUMN_NAME_FIRSTNAME + " LIKE ? OR " + ContactEntry.COLUMN_NAME_LASTNAME + " LIKE ?";
+        String[] whereArgs = new String[]{name + "%", name + "%"};
+        String sortOrder = ContactEntry.COLUMN_NAME_LASTNAME + " ASC";
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        qb.setTables(ContactEntry.TABLE_NAME + " JOIN " + AddressEntry.TABLE_NAME + " ON " + ContactEntry.TABLE_NAME + "." + ContactEntry.COLUMN_ADDRESS_FK + "=" + AddressEntry.TABLE_NAME + "." + AddressEntry._ID);
+        return qb.query(getReadableDatabase(),null,whereClause, whereArgs, null, null, sortOrder);
+    }
+
     /**
      * Inserts Contact into SQLite database
      *

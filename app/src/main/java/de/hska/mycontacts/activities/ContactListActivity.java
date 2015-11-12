@@ -9,8 +9,8 @@ import android.database.sqlite.SQLiteCursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +21,7 @@ import android.widget.Toast;
 import de.hska.mycontacts.R;
 import de.hska.mycontacts.dao.ContactsDBHelper;
 import de.hska.mycontacts.dao.DatabaseSchema.ContactEntry;
+import de.hska.mycontacts.model.Contact;
 import de.hska.mycontacts.util.ContactMapper;
 
 /**
@@ -33,6 +34,7 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
 
     private SimpleCursorAdapter adapter;
     private ListView contactList;
+    private SearchView searchField;
     private int backButtonCount = 0;
 
     /**
@@ -61,6 +63,38 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
                 startActivity(createIntent);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_contact_list, menu);
+
+        searchField = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchField.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Cursor result = ContactsDBHelper.getInstance(ContactListActivity.this).findContactsByName(query);
+                adapter.changeCursor(result);
+                if(result.getCount() == 0) {
+                    Toast.makeText(ContactListActivity.this, "No contacts were found matching your query", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        searchField.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                getLoaderManager().restartLoader(SQLITE_LOADER, null, ContactListActivity.this);
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
