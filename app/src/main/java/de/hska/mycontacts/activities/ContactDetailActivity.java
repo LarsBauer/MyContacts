@@ -130,6 +130,11 @@ public class ContactDetailActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent listIntent = new Intent(this, ContactListActivity.class);
+        /*
+        if(getCallingActivity().getClassName().equals("ContactListActivity")) {
+            listIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        }
+        */
         startActivity(listIntent);
     }
 

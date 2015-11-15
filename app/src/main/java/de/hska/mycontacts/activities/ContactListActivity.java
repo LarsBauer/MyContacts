@@ -9,19 +9,18 @@ import android.database.sqlite.SQLiteCursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import de.hska.mycontacts.R;
 import de.hska.mycontacts.dao.ContactsDBHelper;
 import de.hska.mycontacts.dao.DatabaseSchema.ContactEntry;
-import de.hska.mycontacts.model.Contact;
 import de.hska.mycontacts.util.ContactMapper;
 
 /**
@@ -75,7 +74,7 @@ public class ContactListActivity extends AppCompatActivity implements LoaderMana
             public boolean onQueryTextSubmit(String query) {
                 Cursor result = ContactsDBHelper.getInstance(ContactListActivity.this).findContactsByName(query);
                 adapter.changeCursor(result);
-                if(result.getCount() == 0) {
+                if (result.getCount() == 0) {
                     Toast.makeText(ContactListActivity.this, "No contacts were found matching your query", Toast.LENGTH_SHORT).show();
                 }
                 return true;
