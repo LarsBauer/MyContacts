@@ -194,6 +194,37 @@ public class EditContactActivity extends AppCompatActivity {
     }
 
     /**
+     * Callback for startActivityForResult gets used to process result of intents
+     *
+     * @param requestCode request code of the started intent
+     * @param resultCode  status code to determine whether intent was successful
+     * @param data        returned data of the intent
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_IMAGE_CAPTURE:
+                    cropImage();
+                    break;
+                case REQUEST_IMAGE_CHOOSE:
+                    contact.setImage(data.getData());
+                    cropImage();
+                    break;
+                case REQUEST_IMAGE_CROP:
+                    ImageView preview = (ImageView) findViewById(R.id.imagePreview);
+                    Bitmap tmp = data.getExtras().getParcelable("data");
+                    preview.setImageBitmap(tmp);
+                    break;
+                default:
+                    super.onActivityResult(requestCode, resultCode, data);
+            }
+        } else {
+            Toast.makeText(this, "Whoops - something went wrong!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
      * Starts Intent to choose existing image from gallery
      */
     private void chooseImage() {
